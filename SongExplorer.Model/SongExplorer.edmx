@@ -1,0 +1,474 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="SongExplorerModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="__RefactorLog">
+          <Key>
+            <PropertyRef Name="OperationKey" />
+          </Key>
+          <Property Name="OperationKey" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Key">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SetList">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="DateTime" Type="datetime" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SetListSong">
+          <Key>
+            <PropertyRef Name="SetListId" />
+            <PropertyRef Name="Position" />
+          </Key>
+          <Property Name="SetListId" Type="int" Nullable="false" />
+          <Property Name="Position" Type="int" Nullable="false" />
+          <Property Name="SongId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Slot">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Song">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="KeyId" Type="int" />
+          <Property Name="SlotId" Type="int" />
+          <Property Name="VocalistId" Type="int" />
+          <Property Name="StatusId" Type="int" />
+          <Property Name="DateAdded" Type="datetime" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Status">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Vocalist">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="AssociatedUserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_SetListSong_ToSetList">
+          <End Role="SetList" Type="Self.SetList" Multiplicity="1" />
+          <End Role="SetListSong" Type="Self.SetListSong" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SetList">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SetListSong">
+              <PropertyRef Name="SetListId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SetListSong_ToSong">
+          <End Role="Song" Type="Self.Song" Multiplicity="1" />
+          <End Role="SetListSong" Type="Self.SetListSong" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Song">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SetListSong">
+              <PropertyRef Name="SongId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Song_ToKey">
+          <End Role="Key" Type="Self.Key" Multiplicity="0..1" />
+          <End Role="Song" Type="Self.Song" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Key">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Song">
+              <PropertyRef Name="KeyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Song_ToSlot">
+          <End Role="Slot" Type="Self.Slot" Multiplicity="0..1" />
+          <End Role="Song" Type="Self.Song" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Slot">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Song">
+              <PropertyRef Name="SlotId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Song_ToStatus">
+          <End Role="Status" Type="Self.Status" Multiplicity="0..1" />
+          <End Role="Song" Type="Self.Song" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Status">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Song">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Song_ToVocalist">
+          <End Role="Vocalist" Type="Self.Vocalist" Multiplicity="0..1" />
+          <End Role="Song" Type="Self.Song" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vocalist">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Song">
+              <PropertyRef Name="VocalistId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SongExplorerModelStoreContainer">
+          <EntitySet Name="__RefactorLog" EntityType="Self.__RefactorLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Key" EntityType="Self.Key" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SetList" EntityType="Self.SetList" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SetListSong" EntityType="Self.SetListSong" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Slot" EntityType="Self.Slot" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Song" EntityType="Self.Song" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Status" EntityType="Self.Status" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Vocalist" EntityType="Self.Vocalist" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_SetListSong_ToSetList" Association="Self.FK_SetListSong_ToSetList">
+            <End Role="SetList" EntitySet="SetList" />
+            <End Role="SetListSong" EntitySet="SetListSong" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SetListSong_ToSong" Association="Self.FK_SetListSong_ToSong">
+            <End Role="Song" EntitySet="Song" />
+            <End Role="SetListSong" EntitySet="SetListSong" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Song_ToKey" Association="Self.FK_Song_ToKey">
+            <End Role="Key" EntitySet="Key" />
+            <End Role="Song" EntitySet="Song" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Song_ToSlot" Association="Self.FK_Song_ToSlot">
+            <End Role="Slot" EntitySet="Slot" />
+            <End Role="Song" EntitySet="Song" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Song_ToStatus" Association="Self.FK_Song_ToStatus">
+            <End Role="Status" EntitySet="Status" />
+            <End Role="Song" EntitySet="Song" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Song_ToVocalist" Association="Self.FK_Song_ToVocalist">
+            <End Role="Vocalist" EntitySet="Vocalist" />
+            <End Role="Song" EntitySet="Song" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SongExplorerModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="C__RefactorLog">
+          <Key>
+            <PropertyRef Name="OperationKey" />
+          </Key>
+          <Property Name="OperationKey" Type="Guid" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Key">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Songs" Relationship="Self.FK_Song_ToKey" FromRole="Key" ToRole="Song" />
+        </EntityType>
+        <EntityType Name="SetList">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="SetListSongs" Relationship="Self.FK_SetListSong_ToSetList" FromRole="SetList" ToRole="SetListSong" />
+        </EntityType>
+        <EntityType Name="SetListSong">
+          <Key>
+            <PropertyRef Name="SetListId" />
+            <PropertyRef Name="Position" />
+          </Key>
+          <Property Name="SetListId" Type="Int32" Nullable="false" />
+          <Property Name="Position" Type="Int32" Nullable="false" />
+          <Property Name="SongId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="SetList" Relationship="Self.FK_SetListSong_ToSetList" FromRole="SetListSong" ToRole="SetList" />
+          <NavigationProperty Name="Song" Relationship="Self.FK_SetListSong_ToSong" FromRole="SetListSong" ToRole="Song" />
+        </EntityType>
+        <EntityType Name="Slot">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Songs" Relationship="Self.FK_Song_ToSlot" FromRole="Slot" ToRole="Song" />
+        </EntityType>
+        <EntityType Name="Song">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="KeyId" Type="Int32" />
+          <Property Name="SlotId" Type="Int32" />
+          <Property Name="VocalistId" Type="Int32" />
+          <Property Name="StatusId" Type="Int32" />
+          <Property Name="DateAdded" Type="DateTime" Precision="3" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Key" Relationship="Self.FK_Song_ToKey" FromRole="Song" ToRole="Key" />
+          <NavigationProperty Name="SetListSongs" Relationship="Self.FK_SetListSong_ToSong" FromRole="Song" ToRole="SetListSong" />
+          <NavigationProperty Name="Slot" Relationship="Self.FK_Song_ToSlot" FromRole="Song" ToRole="Slot" />
+          <NavigationProperty Name="Status" Relationship="Self.FK_Song_ToStatus" FromRole="Song" ToRole="Status" />
+          <NavigationProperty Name="Vocalist" Relationship="Self.FK_Song_ToVocalist" FromRole="Song" ToRole="Vocalist" />
+        </EntityType>
+        <EntityType Name="Status">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Songs" Relationship="Self.FK_Song_ToStatus" FromRole="Status" ToRole="Song" />
+        </EntityType>
+        <EntityType Name="Vocalist">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="AssociatedUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Songs" Relationship="Self.FK_Song_ToVocalist" FromRole="Vocalist" ToRole="Song" />
+        </EntityType>
+        <Association Name="FK_Song_ToKey">
+          <End Role="Key" Type="Self.Key" Multiplicity="0..1" />
+          <End Role="Song" Type="Self.Song" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Key">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Song">
+              <PropertyRef Name="KeyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SetListSong_ToSetList">
+          <End Role="SetList" Type="Self.SetList" Multiplicity="1" />
+          <End Role="SetListSong" Type="Self.SetListSong" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SetList">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SetListSong">
+              <PropertyRef Name="SetListId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SetListSong_ToSong">
+          <End Role="Song" Type="Self.Song" Multiplicity="1" />
+          <End Role="SetListSong" Type="Self.SetListSong" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Song">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SetListSong">
+              <PropertyRef Name="SongId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Song_ToSlot">
+          <End Role="Slot" Type="Self.Slot" Multiplicity="0..1" />
+          <End Role="Song" Type="Self.Song" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Slot">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Song">
+              <PropertyRef Name="SlotId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Song_ToStatus">
+          <End Role="Status" Type="Self.Status" Multiplicity="0..1" />
+          <End Role="Song" Type="Self.Song" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Status">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Song">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Song_ToVocalist">
+          <End Role="Vocalist" Type="Self.Vocalist" Multiplicity="0..1" />
+          <End Role="Song" Type="Self.Song" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vocalist">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Song">
+              <PropertyRef Name="VocalistId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SongExplorerEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="C__RefactorLog" EntityType="Self.C__RefactorLog" />
+          <EntitySet Name="Keys" EntityType="Self.Key" />
+          <EntitySet Name="SetLists" EntityType="Self.SetList" />
+          <EntitySet Name="SetListSongs" EntityType="Self.SetListSong" />
+          <EntitySet Name="Slots" EntityType="Self.Slot" />
+          <EntitySet Name="Songs" EntityType="Self.Song" />
+          <EntitySet Name="Status" EntityType="Self.Status" />
+          <EntitySet Name="Vocalists" EntityType="Self.Vocalist" />
+          <AssociationSet Name="FK_Song_ToKey" Association="Self.FK_Song_ToKey">
+            <End Role="Key" EntitySet="Keys" />
+            <End Role="Song" EntitySet="Songs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SetListSong_ToSetList" Association="Self.FK_SetListSong_ToSetList">
+            <End Role="SetList" EntitySet="SetLists" />
+            <End Role="SetListSong" EntitySet="SetListSongs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SetListSong_ToSong" Association="Self.FK_SetListSong_ToSong">
+            <End Role="Song" EntitySet="Songs" />
+            <End Role="SetListSong" EntitySet="SetListSongs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Song_ToSlot" Association="Self.FK_Song_ToSlot">
+            <End Role="Slot" EntitySet="Slots" />
+            <End Role="Song" EntitySet="Songs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Song_ToStatus" Association="Self.FK_Song_ToStatus">
+            <End Role="Status" EntitySet="Status" />
+            <End Role="Song" EntitySet="Songs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Song_ToVocalist" Association="Self.FK_Song_ToVocalist">
+            <End Role="Vocalist" EntitySet="Vocalists" />
+            <End Role="Song" EntitySet="Songs" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SongExplorerModelStoreContainer" CdmEntityContainer="SongExplorerEntities">
+          <EntitySetMapping Name="C__RefactorLog">
+            <EntityTypeMapping TypeName="SongExplorerModel.C__RefactorLog">
+              <MappingFragment StoreEntitySet="__RefactorLog">
+                <ScalarProperty Name="OperationKey" ColumnName="OperationKey" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Keys">
+            <EntityTypeMapping TypeName="SongExplorerModel.Key">
+              <MappingFragment StoreEntitySet="Key">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SetLists">
+            <EntityTypeMapping TypeName="SongExplorerModel.SetList">
+              <MappingFragment StoreEntitySet="SetList">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="DateTime" ColumnName="DateTime" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SetListSongs">
+            <EntityTypeMapping TypeName="SongExplorerModel.SetListSong">
+              <MappingFragment StoreEntitySet="SetListSong">
+                <ScalarProperty Name="SetListId" ColumnName="SetListId" />
+                <ScalarProperty Name="Position" ColumnName="Position" />
+                <ScalarProperty Name="SongId" ColumnName="SongId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Slots">
+            <EntityTypeMapping TypeName="SongExplorerModel.Slot">
+              <MappingFragment StoreEntitySet="Slot">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Songs">
+            <EntityTypeMapping TypeName="SongExplorerModel.Song">
+              <MappingFragment StoreEntitySet="Song">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="KeyId" ColumnName="KeyId" />
+                <ScalarProperty Name="SlotId" ColumnName="SlotId" />
+                <ScalarProperty Name="VocalistId" ColumnName="VocalistId" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="DateAdded" ColumnName="DateAdded" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Status">
+            <EntityTypeMapping TypeName="SongExplorerModel.Status">
+              <MappingFragment StoreEntitySet="Status">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Vocalists">
+            <EntityTypeMapping TypeName="SongExplorerModel.Vocalist">
+              <MappingFragment StoreEntitySet="Vocalist">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="AssociatedUserId" ColumnName="AssociatedUserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

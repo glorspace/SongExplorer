@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="0ea8d85006a243b8934e4abb7060cc33" Name="Diagram1">
+        <EntityTypeShape EntityType="SongExplorerModel.C__RefactorLog" Width="1.5" PointX="5.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SongExplorerModel.Key" Width="1.5" PointX="0.75" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="SongExplorerModel.SetList" Width="1.5" PointX="3" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SongExplorerModel.SetListSong" Width="1.5" PointX="5.25" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SongExplorerModel.Slot" Width="1.5" PointX="0.75" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SongExplorerModel.Song" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="SongExplorerModel.Status" Width="1.5" PointX="0.75" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SongExplorerModel.Vocalist" Width="1.5" PointX="0.75" PointY="10.125" IsExpanded="true" />
+        <AssociationConnector Association="SongExplorerModel.FK_Song_ToKey" ManuallyRouted="false" />
+        <AssociationConnector Association="SongExplorerModel.FK_SetListSong_ToSetList" ManuallyRouted="false" />
+        <AssociationConnector Association="SongExplorerModel.FK_SetListSong_ToSong" ManuallyRouted="false" />
+        <AssociationConnector Association="SongExplorerModel.FK_Song_ToSlot" ManuallyRouted="false" />
+        <AssociationConnector Association="SongExplorerModel.FK_Song_ToStatus" ManuallyRouted="false" />
+        <AssociationConnector Association="SongExplorerModel.FK_Song_ToVocalist" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

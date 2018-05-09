@@ -1,0 +1,80 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="song-explorer-songs">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+            }
+        </style>
+
+        <iron-ajax
+            auto
+            url="http://localhost:65336/api/Keys"
+            handle-as="json"
+            last-response="{{keys}}">
+        </iron-ajax>
+        <iron-ajax
+            auto
+            url="http://localhost:65336/api/Status"
+            handle-as="json"
+            last-response="{{status}}">
+        </iron-ajax>
+
+        <div class="card">
+            <div class="circle">Songs</div>
+            <h1>Manage Songs</h1>
+            <p>See the list of songs in your band's repertoire, add new songs or change properties associated with your songs.</p>
+            <paper-dropdown-menu label="Key">
+                <paper-listbox slot="dropdown-content">
+                    <template is="dom-repeat" items="{{keys}}">
+                        <paper-item>{{item.Name}}</paper-item>
+                    </template>
+                </paper-listbox>
+            </paper-dropdown-menu>
+            <paper-dropdown-menu label="Status">
+                <paper-listbox slot="dropdown-content">
+                    <template is="dom-repeat" items="{{status}}">
+                        <paper-item>{{item.Name}}</paper-item>
+                    </template>
+                </paper-listbox>
+            </paper-dropdown-menu>
+        </div>
+    </template>
+
+    <script>
+        class SongExplorerSongs extends Polymer.Element {
+            static get is() { return 'song-explorer-songs'; }
+
+            static get properties() {
+                return {
+                    keys: {
+                        type: Array
+                    },
+                    status: {
+                        type: Array
+                    }
+                };
+            }
+        }
+
+        window.customElements.define(SongExplorerSongs.is, SongExplorerSongs);
+    </script>
+</dom-module>
