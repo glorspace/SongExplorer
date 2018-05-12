@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using SongExplorer.Model;
+using Microsoft.AspNet.Identity;
 
 namespace SongExplorer.Api.Controllers
 {
@@ -19,14 +20,14 @@ namespace SongExplorer.Api.Controllers
         // GET: api/Slots
         public IQueryable<Slot> GetSlots()
         {
-            return db.Slots;
+            return db.Slots.Where(slot => slot.UserId == User.Identity.GetUserId());
         }
 
         // GET: api/Slots/5
         [ResponseType(typeof(Slot))]
         public IHttpActionResult GetSlot(int id)
         {
-            Slot slot = db.Slots.Find(id);
+            Slot slot = db.Slots.Where(s => s.Id == id && s.UserId == User.Identity.GetUserId()).FirstOrDefault();
             if (slot == null)
             {
                 return NotFound();
@@ -47,6 +48,12 @@ namespace SongExplorer.Api.Controllers
             if (id != slot.Id)
             {
                 return BadRequest();
+            }
+
+            var originalSlot = db.Slots.Find(id);
+            if (originalSlot.UserId != User.Identity.GetUserId())
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
             }
 
             db.Entry(slot).State = EntityState.Modified;
@@ -79,6 +86,8 @@ namespace SongExplorer.Api.Controllers
                 return BadRequest(ModelState);
             }
 
+            slot.UserId = User.Identity.GetUserId();
+
             db.Slots.Add(slot);
             db.SaveChanges();
 
@@ -93,6 +102,11 @@ namespace SongExplorer.Api.Controllers
             if (slot == null)
             {
                 return NotFound();
+            }
+
+            if (slot.UserId != User.Identity.GetUserId())
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
             }
 
             db.Slots.Remove(slot);

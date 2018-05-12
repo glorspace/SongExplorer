@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using SongExplorer.Model;
+using Microsoft.AspNet.Identity;
 
 namespace SongExplorer.Api.Controllers
 {
@@ -19,14 +20,14 @@ namespace SongExplorer.Api.Controllers
         // GET: api/Vocalists
         public IQueryable<Vocalist> GetVocalists()
         {
-            return db.Vocalists;
+            return db.Vocalists.Where(vocalist => vocalist.UserId == User.Identity.GetUserId());
         }
 
         // GET: api/Vocalists/5
         [ResponseType(typeof(Vocalist))]
         public IHttpActionResult GetVocalist(int id)
         {
-            Vocalist vocalist = db.Vocalists.Find(id);
+            Vocalist vocalist = db.Vocalists.Where(v => v.Id == id && v.UserId == User.Identity.GetUserId()).FirstOrDefault();
             if (vocalist == null)
             {
                 return NotFound();
@@ -47,6 +48,12 @@ namespace SongExplorer.Api.Controllers
             if (id != vocalist.Id)
             {
                 return BadRequest();
+            }
+
+            var originalVocalist = db.Vocalists.Find(id);
+            if (originalVocalist.UserId != User.Identity.GetUserId())
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
             }
 
             db.Entry(vocalist).State = EntityState.Modified;
@@ -79,6 +86,8 @@ namespace SongExplorer.Api.Controllers
                 return BadRequest(ModelState);
             }
 
+            vocalist.UserId = User.Identity.GetUserId();
+
             db.Vocalists.Add(vocalist);
             db.SaveChanges();
 
@@ -93,6 +102,11 @@ namespace SongExplorer.Api.Controllers
             if (vocalist == null)
             {
                 return NotFound();
+            }
+
+            if (vocalist.UserId != User.Identity.GetUserId())
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
             }
 
             db.Vocalists.Remove(vocalist);

@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using SongExplorer.Model;
+using Microsoft.AspNet.Identity;
 
 namespace SongExplorer.Api.Controllers
 {
@@ -19,14 +20,14 @@ namespace SongExplorer.Api.Controllers
         // GET: api/SetLists
         public IQueryable<SetList> GetSetLists()
         {
-            return db.SetLists;
+            return db.SetLists.Where(setList => setList.UserId == User.Identity.GetUserId());
         }
 
         // GET: api/SetLists/5
         [ResponseType(typeof(SetList))]
         public IHttpActionResult GetSetList(int id)
         {
-            SetList setList = db.SetLists.Find(id);
+            SetList setList = db.SetLists.Where(s => s.Id == id && s.UserId == User.Identity.GetUserId()).FirstOrDefault();
             if (setList == null)
             {
                 return NotFound();
@@ -47,6 +48,12 @@ namespace SongExplorer.Api.Controllers
             if (id != setList.Id)
             {
                 return BadRequest();
+            }
+
+            var originalSetList = db.SetLists.Find(id);
+            if (originalSetList.UserId != User.Identity.GetUserId())
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
             }
 
             db.Entry(setList).State = EntityState.Modified;
@@ -79,6 +86,8 @@ namespace SongExplorer.Api.Controllers
                 return BadRequest(ModelState);
             }
 
+            setList.UserId = User.Identity.GetUserId();
+
             db.SetLists.Add(setList);
             db.SaveChanges();
 
@@ -93,6 +102,11 @@ namespace SongExplorer.Api.Controllers
             if (setList == null)
             {
                 return NotFound();
+            }
+            
+            if (setList.UserId != User.Identity.GetUserId())
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
             }
 
             db.SetLists.Remove(setList);

@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using SongExplorer.Model;
+using Microsoft.AspNet.Identity;
 
 namespace SongExplorer.Api.Controllers
 {
@@ -19,14 +20,14 @@ namespace SongExplorer.Api.Controllers
         // GET: api/Songs
         public IQueryable<Song> GetSongs()
         {
-            return db.Songs;
+            return db.Songs.Where(song => song.UserId == User.Identity.GetUserId());
         }
 
         // GET: api/Songs/5
         [ResponseType(typeof(Song))]
         public IHttpActionResult GetSong(int id)
         {
-            Song song = db.Songs.Find(id);
+            Song song = db.Songs.Where(s => s.Id == id && s.UserId == User.Identity.GetUserId()).FirstOrDefault();
             if (song == null)
             {
                 return NotFound();
@@ -47,6 +48,12 @@ namespace SongExplorer.Api.Controllers
             if (id != song.Id)
             {
                 return BadRequest();
+            }
+
+            var originalSong = db.Songs.Find(id);
+            if (originalSong.UserId != User.Identity.GetUserId())
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
             }
 
             db.Entry(song).State = EntityState.Modified;
@@ -79,6 +86,8 @@ namespace SongExplorer.Api.Controllers
                 return BadRequest(ModelState);
             }
 
+            song.UserId = User.Identity.GetUserId();
+
             db.Songs.Add(song);
             db.SaveChanges();
 
@@ -93,6 +102,11 @@ namespace SongExplorer.Api.Controllers
             if (song == null)
             {
                 return NotFound();
+            }
+
+            if (song.UserId != User.Identity.GetUserId())
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
             }
 
             db.Songs.Remove(song);
