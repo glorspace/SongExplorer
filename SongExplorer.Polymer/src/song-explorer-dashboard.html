@@ -21,16 +21,54 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
         </style>
 
+        <iron-ajax
+            auto
+            id="statusRequest"
+            url="[[statusUrl]]"
+            handle-as="json"
+            headers="{{_computeHeaders(tokenInfo)}}"
+            last-response="{{status}}"
+            on-response="_statusResponse"
+            on-error="_statusError"
+            loading="{{loading}}">
+        </iron-ajax>
         <div class="card">
             <div class="circle">Dashboard</div>
             <h1>Dashboard</h1>
             <p>This is the future home of the main screen of the app.</p>
+            <template is="dom-repeat" items="[[status]]">
+                <div>{{item.Name}}</div>
+            </template>
         </div>
     </template>
 
     <script>
         class SongExplorerDashboard extends Polymer.Element {
             static get is() { return 'song-explorer-dashboard'; }
+            static get properties() {
+                return {
+                    statusUrl: {
+                        type: String
+                    },
+                    tokenInfo: {
+                        type: Object
+                    }
+                };
+            }
+
+            _computeHeaders(tokenInfo) {
+                return {
+                    "Authorization": "Bearer " + tokenInfo.access_token
+                };
+            }
+
+            _statusResponse() {
+
+            }
+
+            _statusError() {
+
+            }
         }
 
         window.customElements.define(SongExplorerDashboard.is, SongExplorerDashboard);

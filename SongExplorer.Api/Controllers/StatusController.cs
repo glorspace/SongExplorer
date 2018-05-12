@@ -12,6 +12,7 @@ using SongExplorer.Model;
 
 namespace SongExplorer.Api.Controllers
 {
+    [Authorize]
     public class StatusController : ApiController
     {
         private SongExplorerEntities db = new SongExplorerEntities();
