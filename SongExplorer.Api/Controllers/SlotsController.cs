@@ -13,6 +13,7 @@ using Microsoft.AspNet.Identity;
 
 namespace SongExplorer.Api.Controllers
 {
+    [Authorize]
     public class SlotsController : ApiController
     {
         private SongExplorerEntities db = new SongExplorerEntities();
