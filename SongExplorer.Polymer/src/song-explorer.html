@@ -137,7 +137,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-header-layout>
         </app-drawer-layout>
         <paper-dialog id="login" modal>
-            <glor-auth-login login-url="http://localhost:65336/Token" register-url="http://localhost:65336/Api/Account/Register"></glor-auth-login>
+            <glor-auth-login login-url="http://localhost:65336/Token" register-url="http://localhost:65336/Api/Account/Register" on-login-success="_loginSuccess"></glor-auth-login>
         </paper-dialog>
     </template>
 
@@ -151,16 +151,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             static get properties() {
                 return {
-                page: {
-                    type: String,
-                    reflectToAttribute: true,
-                    observer: '_pageChanged',
-                },
-                routeData: Object,
-                subroute: Object,
-                // This shouldn't be neccessary, but the Analyzer isn't picking up
-                // Polymer.Element#rootPath
-                rootPath: String,
+                    page: {
+                        type: String,
+                        reflectToAttribute: true,
+                        observer: '_pageChanged',
+                    },
+                    routeData: Object,
+                    subroute: Object,
+                    // This shouldn't be neccessary, but the Analyzer isn't picking up
+                    // Polymer.Element#rootPath
+                    rootPath: String,
+                    tokenInfo: {
+                        type: Object
+                    }
                 };
             }
 
@@ -199,6 +202,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             _showPage404() {
                 this.page = 'view404';
+            }
+
+            _loginSuccess(event, detail) {
+                this.tokenInfo = detail.tokenInfo;
+                this.$.login.opened = false;
             }
         }
 
