@@ -19,6 +19,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/glor-auth-login/glor-auth-login.html">
@@ -72,7 +73,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             paper-dialog#login {
-                width: 300px;
+                width: 360px;
             }
 
             glor-auth-login {
@@ -85,7 +86,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 margin: 0;
                 padding: 0;
                 --glor-auth-login-content: {
-                    padding: 30px;
+                    padding: 20px 50px;
                 };
                 --glor-auth-login-button: {
                     width: 100%;
@@ -105,6 +106,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             tail="{{subroute}}">
         </app-route>
 
+        <iron-localstorage value="{{tokenInfo}}" on-iron-localstorage-load-empty="_showLogin"></iron-localstorage>
+        
         <app-drawer-layout fullbleed narrow="{{narrow}}">
         <!-- Drawer content -->
         <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
@@ -179,8 +182,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             ready() {
 			    super.ready();
-                
-                this.$.login.opened = true;
             }
 
             _routePageChanged(page) {
@@ -206,6 +207,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             _showPage404() {
                 this.page = 'view404';
+            }
+
+            _showLogin() {
+                this.$.login.opened = true;
             }
 
             _loginSuccess(event, detail) {

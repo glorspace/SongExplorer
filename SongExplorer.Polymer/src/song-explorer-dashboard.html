@@ -57,9 +57,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             _computeHeaders(tokenInfo) {
-                return {
-                    "Authorization": "Bearer " + tokenInfo.access_token
-                };
+                if (tokenInfo)
+                    return {
+                        "Authorization": "Bearer " + tokenInfo.access_token
+                    };
             }
 
             _statusResponse() {
