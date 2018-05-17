@@ -22,6 +22,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/glor-auth-login/glor-auth-login.html">
 <link rel="import" href="../bower_components/web-animations-js/web-animations-next.min.html">
 <link rel="import" href="song-explorer-icons.html">
@@ -40,6 +43,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 --app-secondary-color: black;
 
                 display: block;
+            }
+
+            iron-icon[icon="song-explorer-icons:account-circle"] {
+                color: aliceblue;
+                padding-right: 10px;
+            }
+
+            span.user {
+                color: aliceblue;
+                font-size: 16px;
+            }
+
+            div.user {
+                padding: 0;
+            }
+
+            div.user paper-item {
+                color: black;
+                --paper-item-selected-weight: normal;
+                --paper-item-selected: {
+                    background-color: white;
+                };
+                --paper-item-focused: {
+                    background-color: white;
+                };
             }
 
             app-drawer-layout:not([narrow]) [drawer-toggle] {
@@ -127,6 +155,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <app-toolbar>
                     <paper-icon-button icon="song-explorer-icons:menu" drawer-toggle></paper-icon-button>
                     <div main-title>Song Explorer</div>
+                    <template is="dom-if" if="{{tokenInfo}}">
+                        <paper-menu-button id="user-menu" vertical-offset="60">
+                            <paper-icon-button icon="song-explorer-icons:account-circle" slot="dropdown-trigger"></paper-icon-button>
+                            <span class="user" slot="dropdown-trigger">[[tokenInfo.userName]]</span>
+                            <div class="user" slot="dropdown-content">
+                                <paper-item on-click="_changePassword">Change Password</paper-item>
+                                <paper-item on-click="_logout">Logout</paper-item>
+                            </div>
+                        </paper-menu-button>
+                    </template>
                 </app-toolbar>
             </app-header>
 
@@ -216,6 +254,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             _loginSuccess(event, detail) {
                 this.tokenInfo = detail.tokenInfo;
                 this.$.login.opened = false;
+            }
+
+            _logout() {
+                this.shadowRoot.querySelector('#user-menu').close();
+                this.tokenInfo = null;
+                this.$.login.opened = true;
             }
         }
 
