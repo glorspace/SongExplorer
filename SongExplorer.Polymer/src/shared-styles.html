@@ -49,9 +49,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }            
 
             paper-button {
-                margin: 0;
-                color: white;
-                background-color: var(--app-secondary-color);
+                margin: 10px 10px 0 0;
+                --paper-button: {
+                    color: white;
+                    background-color: var(--app-secondary-color);
+                };                
+                --paper-button-disabled: {
+                    color: slategray;
+                    background-color: var(--app-disabled-color);
+                };
             }
 
             paper-input {
