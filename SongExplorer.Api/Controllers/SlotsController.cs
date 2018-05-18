@@ -97,8 +97,6 @@ namespace SongExplorer.Api.Controllers
         }
 
         // DELETE: api/Slots/5
-        [HttpDelete]
-        [Route("api/Slots/{id}")]
         [ResponseType(typeof(Slot))]
         public IHttpActionResult DeleteSlot(int id)
         {
@@ -119,7 +117,28 @@ namespace SongExplorer.Api.Controllers
             return Ok(slot);
         }
 
-        protected override void Dispose(bool disposing)
+		[HttpPost]
+		[Route("api/Slots/PostDelete/{id}")]
+		public IHttpActionResult PostDeleteSlot(int id)
+		{
+			Slot slot = db.Slots.Find(id);
+			if (slot == null)
+			{
+				return NotFound();
+			}
+
+			if (slot.UserId != User.Identity.GetUserId())
+			{
+				return StatusCode(HttpStatusCode.Forbidden);
+			}
+
+			db.Slots.Remove(slot);
+			db.SaveChanges();
+
+			return Ok(slot);
+		}
+
+		protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
