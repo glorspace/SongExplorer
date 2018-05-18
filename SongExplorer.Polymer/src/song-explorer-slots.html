@@ -9,6 +9,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="song-explorer-slots">
@@ -21,16 +23,152 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
         </style>
 
+        <iron-ajax
+            auto
+            id="slotsRequest"
+            url="[[slotsUrl]]"
+            handle-as="json"
+            headers="{{_computeHeaders(tokenInfo)}}"
+            last-response="{{slots}}"
+            on-response="_slotsResponse"
+            on-error="_slotsError"
+            loading="{{loading}}">
+        </iron-ajax>
+        <iron-ajax
+            id="addSlotRequest"
+            url="[[slotsUrl]]"
+            method="POST"
+            content-type="application/json"            
+            handle-as="json"
+            headers="{{_computeHeaders(tokenInfo)}}"
+            body="{{newSlot}}"
+            on-response="_addSlotResponse"
+            on-error="_addSlotError"
+            loading="{{loading}}">
+        </iron-ajax>
+        <iron-ajax
+            id="deleteSlotRequest"
+            method="DELETE"            
+            handle-as="json"
+            headers="{{_computeHeaders(tokenInfo)}}"
+            on-response="_deleteSlotResponse"
+            on-error="_deleteSlotError"
+            loading="{{loading}}">
+        </iron-ajax>
+
         <div class="card">
             <div class="circle">Slots</div>
             <h1>Configure Slots</h1>
             <p>Song Explorer uses a concept we call "slots" to help you organize and properly populate a set list. When building a set list, you can configure a template that contains slots in an order that your specify. Then songs that are labeled with a particular slot can be channeled into the correct slot in your set list template.</p>
+            <template is="dom-if" if="[[slots.length]]">
+                <paper-listbox selected="{{selectedSlotId}}" attr-for-selected="slotid">
+                    <template is="dom-repeat" items="[[slots]]">
+                        <paper-item slotid="{{item.id}}">{{item.name}}</paper-item>
+                    </template>
+                </paper-listbox>
+                <paper-button on-click="_deleteSlot" disabled$="{{!_slotSelected(selectedSlotId)}}">Delete Slot</paper-button>
+            </template>
+            <template is="dom-if" if="[[!slots.length]]">
+                No slots defined.
+            </template>
+            <template is="dom-if" if="[[!addModeEnabled]]">
+                <paper-button on-click="_add">
+                    <iron-icon icon="song-explorer-icons:add"></iron-icon>
+                    Add Slot
+                </paper-button>
+            </template>
+            <template is="dom-if" if="[[addModeEnabled]]">
+                <paper-input label="New Slot Name" value="{{newSlot.name}}" invalid$="{{newSlotInvalid}}" error-message="{{newSlotErrorMessage}}"></paper-input>
+                <paper-button on-click="_submitSlot">Submit</paper-button>
+            </template>
         </div>
     </template>
 
     <script>
         class SongExplorerSlots extends Polymer.Element {
             static get is() { return 'song-explorer-slots'; }
+            static get properties() {
+                return {
+                    slotsUrl: {
+                        type: String
+                    },
+                    tokenInfo: {
+                        type: Object
+                    },
+                    addModeEnabled: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    newSlot: {
+                        type: Object,
+                        notify: true,
+                        value: {}
+                    },
+                    newSlotInvalid: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    newSlotErrorMessage: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    selectedSlotId: {
+                        type: Number
+                    }
+                };
+            }
+            _computeHeaders(tokenInfo) {
+                if (tokenInfo)
+                    return {
+                        "Authorization": "Bearer " + tokenInfo.access_token
+                    };
+            }
+
+            _slotsResponse() {
+
+            }
+
+            _slotsError() {
+
+            }
+
+            _add() {
+                this.addModeEnabled = true;
+            }
+
+            _submitSlot() {
+                this.$.addSlotRequest.generateRequest();
+            }
+
+            _addSlotResponse() {
+                this.newSlot = {};
+                this.$.slotsRequest.generateRequest();
+            }
+
+            _addSlotError() {
+                this.newSlotInvalid = true;
+                this.newSlotErrorMessage = "Server error. Please try again later."
+            }
+
+            _deleteSlot() {
+                this.$.deleteSlotRequest.url = [this.slotsUrl, this.selectedSlotId].join('/');
+                this.$.deleteSlotRequest.generateRequest();
+            }
+
+            _deleteSlotResponse() {
+                this.$.slotsRequest.generateRequest();
+            }
+
+            _deleteSlotError() {
+
+            }
+
+            _slotSelected(selectedSlotId) {
+                return selectedSlotId !== 0;
+            }
         }
 
         window.customElements.define(SongExplorerSlots.is, SongExplorerSlots);

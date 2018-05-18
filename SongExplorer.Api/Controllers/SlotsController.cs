@@ -21,7 +21,8 @@ namespace SongExplorer.Api.Controllers
         // GET: api/Slots
         public IQueryable<Slot> GetSlots()
         {
-            return db.Slots.Where(slot => slot.UserId == User.Identity.GetUserId());
+            var currentUserId = User.Identity.GetUserId();
+            return db.Slots.Where(slot => slot.UserId == currentUserId);
         }
 
         // GET: api/Slots/5
@@ -96,6 +97,8 @@ namespace SongExplorer.Api.Controllers
         }
 
         // DELETE: api/Slots/5
+        [HttpDelete]
+        [Route("api/Slots/{id}")]
         [ResponseType(typeof(Slot))]
         public IHttpActionResult DeleteSlot(int id)
         {

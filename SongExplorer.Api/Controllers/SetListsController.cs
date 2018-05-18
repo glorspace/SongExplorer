@@ -21,7 +21,8 @@ namespace SongExplorer.Api.Controllers
         // GET: api/SetLists
         public IQueryable<SetList> GetSetLists()
         {
-            return db.SetLists.Where(setList => setList.UserId == User.Identity.GetUserId());
+            var currentUserId = User.Identity.GetUserId();
+            return db.SetLists.Where(setList => setList.UserId == currentUserId);
         }
 
         // GET: api/SetLists/5

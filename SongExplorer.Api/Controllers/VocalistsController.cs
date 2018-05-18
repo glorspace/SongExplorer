@@ -21,7 +21,8 @@ namespace SongExplorer.Api.Controllers
         // GET: api/Vocalists
         public IQueryable<Vocalist> GetVocalists()
         {
-            return db.Vocalists.Where(vocalist => vocalist.UserId == User.Identity.GetUserId());
+            var currentUserId = User.Identity.GetUserId();
+            return db.Vocalists.Where(vocalist => vocalist.UserId == currentUserId);
         }
 
         // GET: api/Vocalists/5

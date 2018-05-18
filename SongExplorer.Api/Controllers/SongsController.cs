@@ -21,7 +21,8 @@ namespace SongExplorer.Api.Controllers
         // GET: api/Songs
         public IQueryable<Song> GetSongs()
         {
-            return db.Songs.Where(song => song.UserId == User.Identity.GetUserId());
+            var currentUserId = User.Identity.GetUserId();
+            return db.Songs.Where(song => song.UserId == currentUserId);
         }
 
         // GET: api/Songs/5
