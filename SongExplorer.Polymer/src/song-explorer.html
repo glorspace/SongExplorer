@@ -29,6 +29,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/web-animations-js/web-animations-next.min.html">
 <link rel="import" href="song-explorer-icons.html">
 
+<link rel="import" href="../themes/theme.html">
+
 <link rel="lazy-import" href="song-explorer-dashboard.html">
 <link rel="lazy-import" href="song-explorer-slots.html">
 <link rel="lazy-import" href="song-explorer-songs.html">
@@ -37,21 +39,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="song-explorer">
     <template>
-        <style>
+        <style include="steel-blue-theme">
             :host {
-                --app-primary-color: #4285f4;
-                --app-secondary-color: black;
-
                 display: block;
             }
 
-            iron-icon[icon="song-explorer-icons:account-circle"] {
-                color: aliceblue;
-                padding-right: 10px;
-            }
-
             span.user {
-                color: aliceblue;
+                color: var(--app-background-color);
                 font-size: 16px;
             }
 
@@ -75,12 +69,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             app-header {
-                color: #fff;
+                color: var(--app-background-color);
                 background-color: var(--app-primary-color);
             }
 
             app-header paper-icon-button {
-                --paper-icon-button-ink-color: white;
+                color: var(--app-background-color);
+                --paper-icon-button-ink-color: var(--app-background-color);
             }
 
             .drawer-list {
@@ -91,7 +86,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 display: block;
                 padding: 0 16px;
                 text-decoration: none;
-                color: var(--app-secondary-color);
+                color: var(--app-primary-color);
                 line-height: 40px;
             }
 

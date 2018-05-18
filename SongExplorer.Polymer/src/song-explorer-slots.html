@@ -11,6 +11,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="song-explorer-slots">
@@ -69,13 +73,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <paper-button on-click="_deleteSlot" disabled$="{{!_slotSelected(selectedSlotId)}}">Delete Slot</paper-button>
             </template>
             <template is="dom-if" if="[[!slots.length]]">
-                No slots defined.
+                [[noSlotsMessage]]
             </template>
             <template is="dom-if" if="[[!addModeEnabled]]">
-                <paper-button on-click="_add">
-                    <iron-icon icon="song-explorer-icons:add"></iron-icon>
-                    Add Slot
-                </paper-button>
+                <div>
+                    <paper-button on-click="_add">
+                        <iron-icon icon="song-explorer-icons:add"></iron-icon>
+                        Add Slot
+                    </paper-button>
+                </div>
             </template>
             <template is="dom-if" if="[[addModeEnabled]]">
                 <paper-input label="New Slot Name" value="{{newSlot.name}}" invalid$="{{newSlotInvalid}}" error-message="{{newSlotErrorMessage}}"></paper-input>
@@ -117,6 +123,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     },
                     selectedSlotId: {
                         type: Number
+                    },
+                    noSlotsMessage: {
+                        type: String,
+                        notify: true,
+                        value: 'No slots defined.'
                     }
                 };
             }
@@ -128,11 +139,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             _slotsResponse() {
-
+                this.noSlotsMessage = 'No slots defined.';
             }
 
             _slotsError() {
-
+                this.noSlotsMessage = 'There was an error retrieving data from the server';
             }
 
             _add() {
