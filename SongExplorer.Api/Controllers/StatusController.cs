@@ -9,44 +9,44 @@ using SongExplorer.Model;
 namespace SongExplorer.Api.Controllers
 {
     [Authorize]
-    public class KeysController : ApiController
+    public class StatusController : ApiController
     {
         private SongExplorerEntities db = new SongExplorerEntities();
 
-        // GET: api/Keys
-        public IQueryable<Key> GetKeys()
+        // GET: api/Status
+        public IQueryable<Status> GetStatus()
         {
-            return db.Keys;
+            return db.Status;
         }
 
-        // GET: api/Keys/5
-        [ResponseType(typeof(Key))]
-        public IHttpActionResult GetKey(int id)
+        // GET: api/Status/5
+        [ResponseType(typeof(Status))]
+        public IHttpActionResult GetStatus(int id)
         {
-            Key key = db.Keys.Find(id);
-            if (key == null)
+            Status status = db.Status.Find(id);
+            if (status == null)
             {
                 return NotFound();
             }
 
-            return Ok(key);
+            return Ok(status);
         }
 
-        // PUT: api/Keys/5
+        // PUT: api/Status/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutKey(int id, Key key)
+        public IHttpActionResult PutStatus(int id, Status status)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != key.Id)
+            if (id != status.Id)
             {
                 return BadRequest();
             }
 
-            db.Entry(key).State = EntityState.Modified;
+            db.Entry(status).State = EntityState.Modified;
 
             try
             {
@@ -54,7 +54,7 @@ namespace SongExplorer.Api.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!KeyExists(id))
+                if (!StatusExists(id))
                 {
                     return NotFound();
                 }
@@ -67,35 +67,35 @@ namespace SongExplorer.Api.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Keys
-        [ResponseType(typeof(Key))]
-        public IHttpActionResult PostKey(Key key)
+        // POST: api/Status
+        [ResponseType(typeof(Status))]
+        public IHttpActionResult PostStatus(Status status)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Keys.Add(key);
+            db.Status.Add(status);
             db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = key.Id }, key);
+            return CreatedAtRoute("DefaultApi", new { id = status.Id }, status);
         }
 
-        // DELETE: api/Keys/5
-        [ResponseType(typeof(Key))]
-        public IHttpActionResult DeleteKey(int id)
+        // DELETE: api/Status/5
+        [ResponseType(typeof(Status))]
+        public IHttpActionResult DeleteStatus(int id)
         {
-            Key key = db.Keys.Find(id);
-            if (key == null)
+            Status status = db.Status.Find(id);
+            if (status == null)
             {
                 return NotFound();
             }
 
-            db.Keys.Remove(key);
+            db.Status.Remove(status);
             db.SaveChanges();
 
-            return Ok(key);
+            return Ok(status);
         }
 
         protected override void Dispose(bool disposing)
@@ -107,9 +107,9 @@ namespace SongExplorer.Api.Controllers
             base.Dispose(disposing);
         }
 
-        private bool KeyExists(int id)
+        private bool StatusExists(int id)
         {
-            return db.Keys.Count(e => e.Id == id) > 0;
+            return db.Status.Count(e => e.Id == id) > 0;
         }
     }
 }
