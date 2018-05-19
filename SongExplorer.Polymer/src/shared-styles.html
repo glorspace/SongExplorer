@@ -14,13 +14,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="shared-styles">
     <template>
         <style>
-            :host > * {
-                --app-primary-color: steelblue;
-                --app-secondary-color: deepskyblue;
-                --app-background-color: aliceblue;
-                --app-accent-color: tomato;
-            }
-
             .card {
                 margin: 24px;
                 padding: 16px;
@@ -62,6 +55,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             paper-input {
                 --paper-input-container-focus-color: var(--app-primary-color);
+            }
+            
+            .icon-button {
+                color: var(--app-secondary-color)
             }
         </style>
     </template>

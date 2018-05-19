@@ -11,15 +11,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="song-explorer-slots">
     <template>
-        <style include="shared-styles">
+        <style include="shared-styles iron-flex iron-flex-alignment">
             :host {
                 display: block;
 
@@ -35,6 +38,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 border-width: 1px;
                 border-color: var(--app-secondary-color);
                 border-radius: 3px;
+            }
+
+            span.error {
+                color: var(--app-error-color);
             }
         </style>
 
@@ -70,15 +77,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             on-error="_deleteSlotError"
             loading="{{loading}}">
         </iron-ajax>
-        <iron-ajax
-            id="postDeleteSlotRequest"
-            method="POST"          
-            handle-as="json"
-            headers="{{_computeHeaders(tokenInfo)}}"
-            on-response="_deleteSlotResponse"
-            on-error="_deleteSlotError"
-            loading="{{loading}}">
-        </iron-ajax>
 
         <div class="card">
             <div class="circle">Slots</div>
@@ -87,10 +85,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <template is="dom-if" if="[[slots.length]]">
                 <paper-listbox selected="{{selectedSlotId}}" attr-for-selected="slotid">
                     <template is="dom-repeat" items="[[slots]]">
-                        <paper-item slotid="{{item.id}}">{{item.name}}</paper-item>
+                        <paper-item slotid="{{item.id}}">
+                            <div class="flex">{{item.name}}</div>
+                            <paper-icon-button class="icon-button" icon="song-explorer-icons:create"></paper-icon-button>
+                            <paper-icon-button class="icon-button" icon="song-explorer-icons:delete-forever" on-click="_deleteSlot"></paper-icon-button>
+                        </paper-item>
                     </template>
                 </paper-listbox>
-                <paper-button on-click="_deleteSlot" disabled$="{{!_slotSelected(selectedSlotId)}}">Delete Slot</paper-button>
+                <!-- <paper-button on-click="_deleteSlot" disabled$="{{!_slotSelected(selectedSlotId)}}">Delete Slot</paper-button> -->
+                <template is="dom-if" if="{{deleteSlotError}}">
+                    <span class="error">[[errorMessage]]</span>
+                </template>
             </template>
             <template is="dom-if" if="[[!slots.length]]">
                 [[noSlotsMessage]]
@@ -104,7 +109,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </div>
             </template>
             <template is="dom-if" if="[[addModeEnabled]]">
-                <paper-input label="New Slot Name" value="{{newSlot.name}}" invalid$="{{newSlotInvalid}}" error-message="{{newSlotErrorMessage}}"></paper-input>
+                <paper-input label="New Slot Name" value="{{newSlot.name}}" invalid$="{{newSlotInvalid}}" error-message="{{errorMessage}}"></paper-input>
                 <paper-button on-click="_submitAdd">Submit</paper-button>
                 <paper-button on-click="_cancelAdd">Cancel</paper-button>
             </template>
@@ -137,7 +142,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         notify: true,
                         value: false
                     },
-                    newSlotErrorMessage: {
+                    errorMessage: {
+                        type: String,
+                        notify: true,
+                        value: 'Server error. Please try again later.'
+                    },
+                    deleteSlotError: {
                         type: Boolean,
                         notify: true,
                         value: false
@@ -170,6 +180,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             _addSlot() {
+                this.deleteSlotError = false;
                 this.addModeEnabled = true;
             }
 
@@ -189,14 +200,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             _addSlotError() {
                 this.newSlotInvalid = true;
-                this.newSlotErrorMessage = "Server error. Please try again later."
             }
 
-            _deleteSlot() {
-                this.$.deleteSlotRequest.url = [this.slotsUrl, this.selectedSlotId].join('/');
+            _deleteSlot(event) {
+                this.deleteSlotError = false;
+                this.$.deleteSlotRequest.url = [this.slotsUrl, event.model.item.id].join('/');
                 this.$.deleteSlotRequest.generateRequest();
-                // this.$.postDeleteSlotRequest.url = [this.slotsUrl, 'PostDelete', this.selectedSlotId].join('/');
-                // this.$.postDeleteSlotRequest.generateRequest();
             }
 
             _deleteSlotResponse() {
@@ -204,7 +213,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             _deleteSlotError() {
-
+                this.deleteSlotError = true;
             }
 
             _slotSelected(selectedSlotId) {
