@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongExplorer.Model", "SongE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongExplorer.Api", "SongExplorer.Api\SongExplorer.Api.csproj", "{DA680367-8D2E-4943-BE9F-CEAD8F51F709}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongExplorer.Api.2", "SongExplorer.Api.2\SongExplorer.Api.2.csproj", "{C2067F7A-6757-4236-8E1E-989E53FFF1BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongExplorer.Api.3", "SongExplorer.Api.3\SongExplorer.Api.3.csproj", "{89D48932-3E04-40A3-8EE9-8F137F9286C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +33,14 @@ Global
 		{DA680367-8D2E-4943-BE9F-CEAD8F51F709}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA680367-8D2E-4943-BE9F-CEAD8F51F709}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA680367-8D2E-4943-BE9F-CEAD8F51F709}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2067F7A-6757-4236-8E1E-989E53FFF1BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2067F7A-6757-4236-8E1E-989E53FFF1BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2067F7A-6757-4236-8E1E-989E53FFF1BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2067F7A-6757-4236-8E1E-989E53FFF1BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89D48932-3E04-40A3-8EE9-8F137F9286C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89D48932-3E04-40A3-8EE9-8F137F9286C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89D48932-3E04-40A3-8EE9-8F137F9286C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89D48932-3E04-40A3-8EE9-8F137F9286C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

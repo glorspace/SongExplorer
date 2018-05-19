@@ -29,7 +29,7 @@ namespace SongExplorer.Api.Controllers
         [ResponseType(typeof(Slot))]
         public IHttpActionResult GetSlot(int id)
         {
-            Slot slot = db.Slots.Where(s => s.Id == id && s.UserId == User.Identity.GetUserId()).FirstOrDefault();
+            Slot slot = db.Slots.SingleOrDefault(s => s.Id == id && s.UserId == User.Identity.GetUserId());
             if (slot == null)
             {
                 return NotFound();
