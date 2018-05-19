@@ -243,3 +243,7 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+
+# JFM file added by Windows 10 Anniversary Edition
+*.jfm
+*.jfm
