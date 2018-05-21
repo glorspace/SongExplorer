@@ -57,6 +57,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 --paper-input-container-focus-color: var(--app-primary-color);
             }
 
+            paper-input[readonly] {
+                --paper-input-container-color: var(--app-primary-color);
+                --paper-input-container-underline: {
+                    display: none;
+                };
+                --paper-input-container-underline-focus: {
+                    display: none;
+                };
+                --paper-input-container-underline-disabled: {
+                    display: none;
+                };
+            }
+
             .icon-button {
                 color: var(--app-secondary-color)
             }

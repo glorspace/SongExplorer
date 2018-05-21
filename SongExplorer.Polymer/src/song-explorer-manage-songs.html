@@ -14,12 +14,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="shared-styles.html">
 
-<dom-module id="song-explorer-simple-entity">
+<dom-module id="song-explorer-manage-songs">
     <template>
         <style include="shared-styles iron-flex iron-flex-alignment">
             :host {
@@ -30,7 +33,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <iron-ajax
             auto
             id="getRequest"
-            url="[[apiUrl]]"
+            url="{{_computeApiUrl(baseApiUrl, 'Songs')}}"
             handle-as="json"
             headers="{{_computeHeaders(tokenInfo)}}"
             last-response="{{items}}"
@@ -40,7 +43,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </iron-ajax>
         <iron-ajax
             id="postRequest"
-            url="[[apiUrl]]"
+            url="{{_computeApiUrl(baseApiUrl, 'Songs')}}"
             method="POST"
             content-type="application/json"            
             handle-as="json"
@@ -69,6 +72,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             on-error="_deleteError"
             loading="{{loading}}">
         </iron-ajax>
+        <iron-ajax
+            auto
+            url="{{_computeApiUrl(baseApiUrl, 'Vocalists')}}"
+            handle-as="json"
+            headers="{{_computeHeaders(tokenInfo)}}"
+            last-response="{{vocalists}}">
+        </iron-ajax>
+        <iron-ajax
+            auto
+            url="{{_computeApiUrl(baseApiUrl, 'Slots')}}"
+            handle-as="json"
+            headers="{{_computeHeaders(tokenInfo)}}"
+            last-response="{{slots}}">
+        </iron-ajax>
+        <iron-ajax
+            auto
+            url="{{_computeApiUrl(baseApiUrl, 'Keys')}}"
+            handle-as="json"
+            headers="{{_computeHeaders(tokenInfo)}}"
+            last-response="{{keys}}">
+        </iron-ajax>
+        <iron-ajax
+            auto
+            url="{{_computeApiUrl(baseApiUrl, 'Status')}}"
+            handle-as="json"
+            headers="{{_computeHeaders(tokenInfo)}}"
+            last-response="{{status}}">
+        </iron-ajax>
 
         <template is="dom-if" if="[[!addModeEnabled]]">
             <div>
@@ -80,6 +111,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </template>
         <template is="dom-if" if="[[addModeEnabled]]">
             <paper-input label="New [[itemType]] Name" value="{{newItem.name}}" invalid$="{{itemInvalid}}" error-message="{{errorMessage}}"></paper-input>
+            <paper-dropdown-menu label="Set Vocalist">
+                <paper-listbox slot="dropdown-content" selected="{{newItem.vocalistId}}" attr-for-selected="vocalist-id">
+                    <template is="dom-repeat" items="{{vocalists}}" as="vocalist">
+                        <paper-item vocalist-id$="{{vocalist.id}}">{{vocalist.name}}</paper-item>
+                    </template>
+                </paper-listbox>
+            </paper-dropdown-menu>
+            <paper-dropdown-menu label="Set Slot">
+                <paper-listbox slot="dropdown-content" selected="{{newItem.slotId}}" attr-for-selected="slot-id">
+                    <template is="dom-repeat" items="{{slots}}" as="slot">
+                        <paper-item slot-id$="{{slot.id}}">{{slot.name}}</paper-item>
+                    </template>
+                </paper-listbox>
+            </paper-dropdown-menu>
+            <paper-dropdown-menu label="Set Key">
+                <paper-listbox slot="dropdown-content" selected="{{newItem.keyId}}" attr-for-selected="key-id">
+                    <template is="dom-repeat" items="{{keys}}" as="key">
+                        <paper-item key-id$="{{key.id}}">{{key.name}}</paper-item>
+                    </template>
+                </paper-listbox>
+            </paper-dropdown-menu>
+            <paper-dropdown-menu label="Set Status">
+                <paper-listbox slot="dropdown-content" selected="{{newItem.statusId}}" attr-for-selected="status-id">
+                    <template is="dom-repeat" items="{{status}}" as="stat">
+                        <paper-item status-id$="{{stat.id}}">{{stat.name}}</paper-item>
+                    </template>
+                </paper-listbox>
+            </paper-dropdown-menu>
             <paper-button raised on-click="_submitAdd" disabled$="{{_disableSubmit(newItem.name)}}">Submit</paper-button>
             <paper-button raised on-click="_cancelAdd">Cancel</paper-button>
         </template>
@@ -88,7 +147,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <div class="item layout horizontal center">
                     <template is="dom-if" if="{{!item.editModeEnabled}}">
                         <template is="dom-if" if="{{!item.confirmModeEnabled}}">
-                            <div class="flex">{{item.name}}</div>
+                            <paper-input class="flex" label="Name" value="{{item.name}}" readonly></paper-input>
+                            <paper-input class="flex" label="Vocalist" value="{{item.vocalist.name}}" always-float-label readonly></paper-input>
+                            <paper-input class="flex" label="Slot" value="{{item.slot.name}}" always-float-label readonly></paper-input>
+                            <paper-input class="flex" label="Key" value="{{item.key.name}}" always-float-label readonly></paper-input>
+                            <paper-input class="flex" label="Status" value="{{item.status.name}}" always-float-label readonly></paper-input>
                             <paper-icon-button id="edit-{{item.id}}" class="icon-button" icon="song-explorer-icons:create" on-click="_editItem" alt="Edit" disabled$="{{disableButtons}}"></paper-icon-button>
                             <paper-tooltip for="edit-{{item.id}}" offset="0" position="left" animation-delay="100">Edit</paper-tooltip>
                             <paper-icon-button id="delete-{{item.id}}" class="icon-button" icon="song-explorer-icons:delete-forever" on-click="_confirmDelete" alt="Delete" disabled$="{{disableButtons}}"></paper-icon-button>
@@ -104,6 +167,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </template>
                     <template is="dom-if" if="{{item.editModeEnabled}}">
                         <paper-input class="flex" label="Edit [[itemType]] Name" value="{{item.editedName}}" invalid$="{{itemInvalid}}" error-message="{{errorMessage}}"></paper-input>
+                        <paper-dropdown-menu label="Set Vocalist">
+                            <paper-listbox slot="dropdown-content">
+                                <template is="dom-repeat" items="{{vocalists}}">
+                                    <paper-item>{{item.name}}</paper-item>
+                                </template>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                        <paper-dropdown-menu label="Set Slot">
+                            <paper-listbox slot="dropdown-content">
+                                <template is="dom-repeat" items="{{slots}}">
+                                    <paper-item>{{item.name}}</paper-item>
+                                </template>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                        <paper-dropdown-menu label="Set Key">
+                            <paper-listbox slot="dropdown-content">
+                                <template is="dom-repeat" items="{{keys}}">
+                                    <paper-item>{{item.name}}</paper-item>
+                                </template>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                        <paper-dropdown-menu label="Set Status">
+                            <paper-listbox slot="dropdown-content">
+                                <template is="dom-repeat" items="{{status}}">
+                                    <paper-item>{{item.name}}</paper-item>
+                                </template>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
                         <paper-icon-button id="save-{{item.id}}" class="icon-button" icon="song-explorer-icons:check" on-click="_saveEdit" alt="Save" disabled$="{{_disableSave(item.name, item.editedName)}}"></paper-icon-button>
                         <paper-tooltip for="save-{{item.id}}" offset="0" position="left" animation-delay="100">Save</paper-tooltip>
                         <paper-icon-button id="cancel-{{item.id}}" class="icon-button" icon="song-explorer-icons:close" on-click="_cancelEdit" alt="Cancel"></paper-icon-button>
@@ -127,11 +218,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
 
     <script>
-        class SongExplorerSimpleEntity extends Polymer.Element {
-            static get is() { return 'song-explorer-simple-entity'; }
+        class SongExplorerManageSongs extends Polymer.Element {
+            static get is() { return 'song-explorer-manage-songs'; }
             static get properties() {
                 return {
-                    apiUrl: {
+                    baseApiUrl: {
                         type: String
                     },
                     tokenInfo: {
@@ -178,6 +269,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     noItemsMessage: {
                         type: String,
                         notify: true
+                    },
+                    vocalists: {
+                        type: Array
+                    },
+                    slots: {
+                        type: Array
+                    },
+                    keys: {
+                        type: Array
+                    },
+                    status: {
+                        type: Array
                     }
                 };
             }
@@ -224,7 +327,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             _deleteItem(event) {
                 this.deleteError = false;
                 this.disableButtons = false;
-                this.$.deleteRequest.url = [this.apiUrl, event.model.item.id].join('/');
+                this.$.deleteRequest.url = [this.baseApiUrl, 'Songs', event.model.item.id].join('/');
                 this.$.deleteRequest.generateRequest();
             }
 
@@ -244,7 +347,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             _saveEdit(event) {
                 event.model.item.name = event.model.item.editedName;
-                this.$.putRequest.url = [this.apiUrl, event.model.item.id].join('/');
+                this.$.putRequest.url = [this.baseApiUrl, 'Songs', event.model.item.id].join('/');
                 this.$.putRequest.body = event.model.item;
                 this.$.putRequest.generateRequest();
             }
@@ -292,8 +395,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.disableButtons = false;
                 event.model.set("item.confirmModeEnabled", false);
             }
+
+            _computeApiUrl(baseApiUrl, entity) {
+                return [baseApiUrl, entity].join('/');
+            }
         }
 
-        window.customElements.define(SongExplorerSimpleEntity.is, SongExplorerSimpleEntity);
+        window.customElements.define(SongExplorerManageSongs.is, SongExplorerManageSongs);
     </script>
 </dom-module>
