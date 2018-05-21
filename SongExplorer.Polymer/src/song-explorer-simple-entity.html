@@ -86,11 +86,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <template is="dom-repeat" items="[[items]]">
                 <div class="item layout horizontal center">
                     <template is="dom-if" if="{{!item.editModeEnabled}}">
-                        <div class="flex">{{item.name}}</div>
-                        <paper-icon-button id="edit-{{item.id}}" class="icon-button" icon="song-explorer-icons:create" on-click="_editItem" alt="Edit" disabled$="{{disableButtons}}"></paper-icon-button>
-                        <paper-tooltip for="edit-{{item.id}}" offset="0" position="left" animation-delay="100">Edit</paper-tooltip>
-                        <paper-icon-button id="delete-{{item.id}}" class="icon-button" icon="song-explorer-icons:delete-forever" on-click="_deleteItem" alt="Delete" disabled$="{{disableButtons}}"></paper-icon-button>
-                        <paper-tooltip for="delete-{{item.id}}" offset="0" position="right" animation-delay="100">Delete</paper-tooltip>
+                        <template is="dom-if" if="{{!item.confirmModeEnabled}}">
+                            <div class="flex">{{item.name}}</div>
+                            <paper-icon-button id="edit-{{item.id}}" class="icon-button" icon="song-explorer-icons:create" on-click="_editItem" alt="Edit" disabled$="{{disableButtons}}"></paper-icon-button>
+                            <paper-tooltip for="edit-{{item.id}}" offset="0" position="left" animation-delay="100">Edit</paper-tooltip>
+                            <paper-icon-button id="delete-{{item.id}}" class="icon-button" icon="song-explorer-icons:delete-forever" on-click="_confirmDelete" alt="Delete" disabled$="{{disableButtons}}"></paper-icon-button>
+                            <paper-tooltip for="delete-{{item.id}}" offset="0" position="right" animation-delay="100">Delete</paper-tooltip>
+                        </template>
+                        <template is="dom-if" if="{{item.confirmModeEnabled}}">
+                            <div class="flex">Are you sure you want to delete '{{item.name}}'?</div>
+                            <paper-icon-button id="yes-{{item.id}}" class="icon-button" icon="song-explorer-icons:check" on-click="_deleteItem" alt="Yes"></paper-icon-button>
+                            <paper-tooltip for="yes-{{item.id}}" offset="0" position="left" animation-delay="100">Yes</paper-tooltip>
+                            <paper-icon-button id="no-{{item.id}}" class="icon-button" icon="song-explorer-icons:close" on-click="_cancelDelete" alt="No"></paper-icon-button>
+                            <paper-tooltip for="no-{{item.id}}" offset="0" position="right" animation-delay="100">No</paper-tooltip>
+                        </template>
                     </template>
                     <template is="dom-if" if="{{item.editModeEnabled}}">
                         <paper-input class="flex" label="Edit [[itemType]] Name" value="{{item.editedName}}" invalid$="{{itemInvalid}}" error-message="{{errorMessage}}"></paper-input>
@@ -213,6 +222,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             _deleteItem(event) {
                 this.deleteError = false;
+                this.disableButtons = false;
                 this.$.deleteRequest.url = [this.apiUrl, event.model.item.id].join('/');
                 this.$.deleteRequest.generateRequest();
             }
@@ -270,6 +280,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             _disableSave(name, editedName) {
                 return name === editedName;
+            }
+
+            _confirmDelete(event) {
+                this.disableButtons = true;
+                event.model.set("item.confirmModeEnabled", true);
+            }            
+
+            _cancelDelete(event) {
+                this.disableButtons = false;
+                event.model.set("item.confirmModeEnabled", false);
             }
         }
 
