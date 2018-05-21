@@ -98,7 +98,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             url="{{_computeApiUrl(baseApiUrl, 'Status')}}"
             handle-as="json"
             headers="{{_computeHeaders(tokenInfo)}}"
-            last-response="{{statuses}}">
+            last-response="{{status}}">
         </iron-ajax>
 
         <template is="dom-if" if="[[!addModeEnabled]]">
@@ -134,8 +134,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </paper-dropdown-menu>
             <paper-dropdown-menu label="Set Status">
                 <paper-listbox slot="dropdown-content" selected="{{newItem.statusId}}" attr-for-selected="status-id">
-                    <template is="dom-repeat" items="{{statuses}}" as="status">
-                        <paper-item status-id$="{{status.id}}">{{status.name}}</paper-item>
+                    <template is="dom-repeat" items="{{status}}" as="stat">
+                        <paper-item status-id$="{{stat.id}}">{{stat.name}}</paper-item>
                     </template>
                 </paper-listbox>
             </paper-dropdown-menu>
@@ -190,7 +190,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         </paper-dropdown-menu>
                         <paper-dropdown-menu label="Set Status">
                             <paper-listbox slot="dropdown-content">
-                                <template is="dom-repeat" items="{{statuses}}">
+                                <template is="dom-repeat" items="{{status}}">
                                     <paper-item>{{item.name}}</paper-item>
                                 </template>
                             </paper-listbox>
@@ -279,7 +279,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     keys: {
                         type: Array
                     },
-                    statuses: {
+                    status: {
                         type: Array
                     }
                 };
