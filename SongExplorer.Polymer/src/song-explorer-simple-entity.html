@@ -79,7 +79,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </template>
         <template is="dom-if" if="[[addModeEnabled]]">
             <paper-input label="New [[itemType]] Name" value="{{newItem.name}}" invalid$="{{itemInvalid}}" error-message="{{errorMessage}}"></paper-input>
-            <paper-button raised on-click="_submitAdd">Submit</paper-button>
+            <paper-button raised on-click="_submitAdd" disabled$="{{_disableSubmit(newItem.name)}}">Submit</paper-button>
             <paper-button raised on-click="_cancelAdd">Cancel</paper-button>
         </template>
         <template is="dom-if" if="[[items.length]]">
@@ -94,7 +94,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </template>
                     <template is="dom-if" if="{{item.editModeEnabled}}">
                         <paper-input class="flex" label="Edit [[itemType]] Name" value="{{item.editedName}}" invalid$="{{itemInvalid}}" error-message="{{errorMessage}}"></paper-input>
-                        <paper-icon-button id="save-{{item.id}}" class="icon-button" icon="song-explorer-icons:check" on-click="_saveEdit" alt="Save"></paper-icon-button>
+                        <paper-icon-button id="save-{{item.id}}" class="icon-button" icon="song-explorer-icons:check" on-click="_saveEdit" alt="Save" disabled$="{{_disableSave(item.name, item.editedName)}}"></paper-icon-button>
                         <paper-tooltip for="save-{{item.id}}" offset="0" position="left" animation-delay="100">Save</paper-tooltip>
                         <paper-icon-button id="cancel-{{item.id}}" class="icon-button" icon="song-explorer-icons:close" on-click="_cancelEdit" alt="Cancel"></paper-icon-button>
                         <paper-tooltip for="cancel-{{item.id}}" offset="0" position="right" animation-delay="100">Cancel</paper-tooltip>
@@ -260,6 +260,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         return true;
                     }
                 });
+            }
+
+            _disableSubmit(newItemName) {
+                if (newItemName && newItemName.length)
+                    return false;
+                return true;
+            }
+
+            _disableSave(name, editedName) {
+                return name === editedName;
             }
         }
 
