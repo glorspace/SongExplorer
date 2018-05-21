@@ -49,12 +49,6 @@ namespace SongExplorer.Api.Controllers
                 return BadRequest();
             }
 
-            var originalSetList = db.SetLists.Find(id);
-            if (originalSetList.UserId != User.Identity.GetUserId())
-            {
-                return StatusCode(HttpStatusCode.Forbidden);
-            }
-
             db.Entry(setList).State = EntityState.Modified;
 
             try

@@ -19,7 +19,7 @@ namespace SongExplorer.Api.Controllers
         public IQueryable<Song> GetSongs()
         {
             var currentUserId = User.Identity.GetUserId();
-            return db.Songs.Where(song => song.UserId == currentUserId);
+            return db.Songs.Where(song => song.UserId == currentUserId).OrderBy(song => song.Name);
         }
 
         // GET: api/Songs/5
@@ -47,12 +47,6 @@ namespace SongExplorer.Api.Controllers
             if (id != song.Id)
             {
                 return BadRequest();
-            }
-
-            var originalSong = db.Songs.Find(id);
-            if (originalSong.UserId != User.Identity.GetUserId())
-            {
-                return StatusCode(HttpStatusCode.Forbidden);
             }
 
             db.Entry(song).State = EntityState.Modified;

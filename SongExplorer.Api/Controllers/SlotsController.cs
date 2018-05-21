@@ -19,7 +19,7 @@ namespace SongExplorer.Api.Controllers
         public IQueryable<Slot> GetSlots()
         {
             var currentUserId = User.Identity.GetUserId();
-            return db.Slots.Where(slot => slot.UserId == currentUserId);
+            return db.Slots.Where(slot => slot.UserId == currentUserId).OrderBy(slot => slot.Name);
         }
 
         // GET: api/Slots/5
@@ -47,12 +47,6 @@ namespace SongExplorer.Api.Controllers
             if (id != slot.Id)
             {
                 return BadRequest();
-            }
-
-            var originalSlot = db.Slots.Find(id);
-            if (originalSlot.UserId != User.Identity.GetUserId())
-            {
-                return StatusCode(HttpStatusCode.Forbidden);
             }
 
             db.Entry(slot).State = EntityState.Modified;
