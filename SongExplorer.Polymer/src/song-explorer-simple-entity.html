@@ -1,0 +1,268 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="song-explorer-simple-entity">
+    <template>
+        <style include="shared-styles iron-flex iron-flex-alignment">
+            :host {
+                display: block;
+            }
+        </style>
+
+        <iron-ajax
+            auto
+            id="getRequest"
+            url="[[apiUrl]]"
+            handle-as="json"
+            headers="{{_computeHeaders(tokenInfo)}}"
+            last-response="{{items}}"
+            on-response="_getResponse"
+            on-error="_getError"
+            loading="{{loading}}">
+        </iron-ajax>
+        <iron-ajax
+            id="postRequest"
+            url="[[apiUrl]]"
+            method="POST"
+            content-type="application/json"            
+            handle-as="json"
+            headers="{{_computeHeaders(tokenInfo)}}"
+            body="{{newItem}}"
+            on-response="_postResponse"
+            on-error="_postError"
+            loading="{{loading}}">
+        </iron-ajax>
+        <iron-ajax
+            id="putRequest"
+            method="PUT"
+            content-type="application/json"            
+            handle-as="json"
+            headers="{{_computeHeaders(tokenInfo)}}"
+            on-response="_putResponse"
+            on-error="_putError"
+            loading="{{loading}}">
+        </iron-ajax>
+        <iron-ajax
+            id="deleteRequest"
+            method="DELETE"          
+            handle-as="json"
+            headers="{{_computeHeaders(tokenInfo)}}"
+            on-response="_deleteResponse"
+            on-error="_deleteError"
+            loading="{{loading}}">
+        </iron-ajax>
+
+        <template is="dom-if" if="[[!addModeEnabled]]">
+            <div>
+                <paper-button raised on-click="_addItem" disabled$="{{disableButtons}}">
+                    <iron-icon icon="song-explorer-icons:add"></iron-icon>
+                    Add [[itemType]]
+                </paper-button>
+            </div>
+        </template>
+        <template is="dom-if" if="[[addModeEnabled]]">
+            <paper-input label="New [[itemType]] Name" value="{{newItem.name}}" invalid$="{{itemInvalid}}" error-message="{{errorMessage}}"></paper-input>
+            <paper-button raised on-click="_submitAdd">Submit</paper-button>
+            <paper-button raised on-click="_cancelAdd">Cancel</paper-button>
+        </template>
+        <template is="dom-if" if="[[items.length]]">
+            <template is="dom-repeat" items="[[items]]">
+                <div class="item layout horizontal center">
+                    <template is="dom-if" if="{{!item.editModeEnabled}}">
+                        <div class="flex">{{item.name}}</div>
+                        <paper-icon-button id="edit-{{item.id}}" class="icon-button" icon="song-explorer-icons:create" on-click="_editItem" alt="Edit" disabled$="{{disableButtons}}"></paper-icon-button>
+                        <paper-tooltip for="edit-{{item.id}}" offset="0" position="left" animation-delay="100">Edit</paper-tooltip>
+                        <paper-icon-button id="delete-{{item.id}}" class="icon-button" icon="song-explorer-icons:delete-forever" on-click="_deleteItem" alt="Delete" disabled$="{{disableButtons}}"></paper-icon-button>
+                        <paper-tooltip for="delete-{{item.id}}" offset="0" position="right" animation-delay="100">Delete</paper-tooltip>
+                    </template>
+                    <template is="dom-if" if="{{item.editModeEnabled}}">
+                        <paper-input class="flex" label="Edit [[itemType]] Name" value="{{item.editedName}}" invalid$="{{itemInvalid}}" error-message="{{errorMessage}}"></paper-input>
+                        <paper-icon-button id="save-{{item.id}}" class="icon-button" icon="song-explorer-icons:check" on-click="_saveEdit" alt="Save"></paper-icon-button>
+                        <paper-tooltip for="save-{{item.id}}" offset="0" position="left" animation-delay="100">Save</paper-tooltip>
+                        <paper-icon-button id="cancel-{{item.id}}" class="icon-button" icon="song-explorer-icons:close" on-click="_cancelEdit" alt="Cancel"></paper-icon-button>
+                        <paper-tooltip for="cancel-{{item.id}}" offset="0" position="right" animation-delay="100">Cancel</paper-tooltip>
+                    </template>
+                </div>
+            </template>
+            <template is="dom-if" if="{{deleteError}}">
+                <div class="item error">[[errorMessage]]</div>
+            </template>
+        </template>
+        <template is="dom-if" if="[[!items.length]]">
+            <div class="item error">[[noItemsMessage]]</div>
+        </template>
+        <template is="dom-if" if="{{loading}}">
+            <div class="spinner">                 
+                <paper-spinner-lite active></paper-spinner-lite>
+                <span>Loading...</span>
+            </div>
+        </template>
+    </template>
+
+    <script>
+        class SongExplorerSimpleEntity extends Polymer.Element {
+            static get is() { return 'song-explorer-simple-entity'; }
+            static get properties() {
+                return {
+                    apiUrl: {
+                        type: String
+                    },
+                    tokenInfo: {
+                        type: Object
+                    },
+                    itemType: {
+                        type: String,
+                        notify: true
+                    },
+                    items: {
+                        type: Array,
+                        notify: true
+                    },
+                    addModeEnabled: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    disableButtons: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    newItem: {
+                        type: Object,
+                        notify: true,
+                        value: {}
+                    },
+                    itemInvalid: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    errorMessage: {
+                        type: String,
+                        notify: true,
+                        value: 'Server error. Please try again later.'
+                    },
+                    deleteError: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    noItemsMessage: {
+                        type: String,
+                        notify: true
+                    }
+                };
+            }
+            _computeHeaders(tokenInfo) {
+                if (tokenInfo)
+                    return {
+                        "Authorization": "Bearer " + tokenInfo.access_token
+                    };
+            }
+
+            _getResponse() {
+                if (!this.items.length)
+                    this.noItemsMessage = 'No items defined.';
+            }
+
+            _getError(error) {
+                this.noItemsMessage = 'There was an error retrieving data from the server.';
+            }
+
+            _addItem() {
+                this.itemInvalid = false;
+                this.deleteError = false;
+                this.addModeEnabled = true;
+            }
+
+            _cancelAdd() {
+                this.addModeEnabled = false;
+            }
+
+            _submitAdd() {
+                this.$.postRequest.generateRequest();
+            }
+
+            _postResponse() {
+                this.addModeEnabled = false;
+                this.newItem = {};
+                this.$.getRequest.generateRequest();
+            }
+
+            _postError() {
+                this.itemInvalid = true;
+            }
+
+            _deleteItem(event) {
+                this.deleteError = false;
+                this.$.deleteRequest.url = [this.apiUrl, event.model.item.id].join('/');
+                this.$.deleteRequest.generateRequest();
+            }
+
+            _deleteResponse() {
+                this.$.getRequest.generateRequest();
+            }
+
+            _deleteError() {
+                this.deleteError = true;
+            }
+
+            _editItem(event) {
+                this.disableButtons = true;
+                event.model.item.editedName = event.model.item.name;
+                event.model.set("item.editModeEnabled", true);
+            }
+
+            _saveEdit(event) {
+                event.model.item.name = event.model.item.editedName;
+                this.$.putRequest.url = [this.apiUrl, event.model.item.id].join('/');
+                this.$.putRequest.body = event.model.item;
+                this.$.putRequest.generateRequest();
+            }
+
+            _cancelEdit(event) {
+                this.disableButtons = false;
+                event.model.set("item.editModeEnabled", false);
+            }            
+
+            _putResponse() {
+                this.disableButtons = false;
+                this._disableEditMode();
+                this.$.getRequest.generateRequest();
+            }
+
+            _putError() {
+                this.itemInvalid = true;
+            }
+            
+            _disableEditMode() {
+                this.items.some(function(item) {
+                    if (item.editModeEnabled) {
+                        item.editModeEnabled = false;
+                        return true;
+                    }
+                });
+            }
+        }
+
+        window.customElements.define(SongExplorerSimpleEntity.is, SongExplorerSimpleEntity);
+    </script>
+</dom-module>

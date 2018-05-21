@@ -42,7 +42,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }            
 
             paper-button {
-                margin: 10px 10px 0 0;
+                margin: 10px 0;
                 --paper-button: {
                     color: white;
                     background-color: var(--app-secondary-color);
@@ -56,9 +56,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             paper-input {
                 --paper-input-container-focus-color: var(--app-primary-color);
             }
-            
+
             .icon-button {
                 color: var(--app-secondary-color)
+            }
+
+            .icon-button[disabled] {
+                color: var(--app-disabled-color);
+            }
+
+            paper-spinner-lite {
+                --paper-spinner-color: var(--app-accent-color);
+                width: 20px;
+                height: 20px;
+            }
+
+            div.spinner {
+                margin: 20px 0 0 0;
+                text-align: center;
+            }
+
+            div.spinner > span {
+                margin-left: 10px;
+                color: var(--app-primary-color);
+                font-size: 26px;
+            }
+
+            div.item {
+                margin: 1px;
+                padding: 10px 10px 10px 20px;
+                border-style: solid;
+                border-width: 1px;
+                border-color: var(--app-primary-color);
+                border-radius: 3px;
+            }
+
+            div.error {
+                margin-top: 10px;
+                color: var(--app-error-color);
+                background-color: var(--app-disabled-color);
             }
         </style>
     </template>
