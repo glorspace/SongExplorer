@@ -28,6 +28,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             :host {
                 display: block;
             }
+
+            paper-input.name {
+                min-width: 200px;
+            }
         </style>
 
         <iron-ajax
@@ -110,29 +114,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </div>
         </template>
         <template is="dom-if" if="[[addModeEnabled]]">
-            <paper-input label="New [[itemType]] Name" value="{{newItem.name}}" invalid$="{{itemInvalid}}" error-message="{{errorMessage}}"></paper-input>
-            <paper-dropdown-menu label="Set Vocalist">
+            <paper-input class="flex name" label="New [[itemType]] Name" value="{{newItem.name}}" invalid$="{{itemInvalid}}" error-message="{{errorMessage}}"></paper-input>
+            <paper-dropdown-menu class="flex vocalist" label="Set Vocalist">
                 <paper-listbox slot="dropdown-content" selected="{{newItem.vocalistId}}" attr-for-selected="vocalist-id">
                     <template is="dom-repeat" items="{{vocalists}}" as="vocalist">
                         <paper-item vocalist-id$="{{vocalist.id}}">{{vocalist.name}}</paper-item>
                     </template>
                 </paper-listbox>
             </paper-dropdown-menu>
-            <paper-dropdown-menu label="Set Slot">
+            <paper-dropdown-menu class="flex slot" label="Set Slot">
                 <paper-listbox slot="dropdown-content" selected="{{newItem.slotId}}" attr-for-selected="slot-id">
                     <template is="dom-repeat" items="{{slots}}" as="slot">
                         <paper-item slot-id$="{{slot.id}}">{{slot.name}}</paper-item>
                     </template>
                 </paper-listbox>
             </paper-dropdown-menu>
-            <paper-dropdown-menu label="Set Key">
+            <paper-dropdown-menu class="flex key" label="Set Key">
                 <paper-listbox slot="dropdown-content" selected="{{newItem.keyId}}" attr-for-selected="key-id">
                     <template is="dom-repeat" items="{{keys}}" as="key">
                         <paper-item key-id$="{{key.id}}">{{key.name}}</paper-item>
                     </template>
                 </paper-listbox>
             </paper-dropdown-menu>
-            <paper-dropdown-menu label="Set Status">
+            <paper-dropdown-menu class="flex status" label="Set Status">
                 <paper-listbox slot="dropdown-content" selected="{{newItem.statusId}}" attr-for-selected="status-id">
                     <template is="dom-repeat" items="{{statuses}}" as="status">
                         <paper-item status-id$="{{status.id}}">{{status.name}}</paper-item>
@@ -147,11 +151,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <div class="item layout horizontal center">
                     <template is="dom-if" if="{{!item.editModeEnabled}}">
                         <template is="dom-if" if="{{!item.confirmModeEnabled}}">
-                            <paper-input class="flex" label="Name" value="{{item.name}}" readonly></paper-input>
-                            <paper-input class="flex" label="Vocalist" value="{{item.vocalist.name}}" always-float-label readonly></paper-input>
-                            <paper-input class="flex" label="Slot" value="{{item.slot.name}}" always-float-label readonly></paper-input>
-                            <paper-input class="flex" label="Key" value="{{item.key.name}}" always-float-label readonly></paper-input>
-                            <paper-input class="flex" label="Status" value="{{item.status.name}}" always-float-label readonly></paper-input>
+                            <paper-input class="flex name" label="Name" value="{{item.name}}" readonly></paper-input>
+                            <paper-input class="flex vocalist" label="Vocalist" value="{{item.vocalist.name}}" always-float-label readonly></paper-input>
+                            <paper-input class="flex slot" label="Slot" value="{{item.slot.name}}" always-float-label readonly></paper-input>
+                            <paper-input class="flex key" label="Key" value="{{item.key.name}}" always-float-label readonly></paper-input>
+                            <paper-input class="flex status" label="Status" value="{{item.status.name}}" always-float-label readonly></paper-input>
                             <paper-icon-button id="edit-{{item.id}}" class="icon-button" icon="song-explorer-icons:create" on-click="_editItem" alt="Edit" disabled$="{{disableButtons}}"></paper-icon-button>
                             <paper-tooltip for="edit-{{item.id}}" offset="0" position="left" animation-delay="100">Edit</paper-tooltip>
                             <paper-icon-button id="delete-{{item.id}}" class="icon-button" icon="song-explorer-icons:delete-forever" on-click="_confirmDelete" alt="Delete" disabled$="{{disableButtons}}"></paper-icon-button>
@@ -166,29 +170,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         </template>
                     </template>
                     <template is="dom-if" if="{{item.editModeEnabled}}">
-                        <paper-input class="flex" label="Edit [[itemType]] Name" value="{{item.editedName}}" invalid$="{{itemInvalid}}" error-message="{{errorMessage}}"></paper-input>
-                        <paper-dropdown-menu label="Set Vocalist">
+                        <paper-input class="flex name" label="Edit [[itemType]] Name" value="{{item.editedName}}" invalid$="{{itemInvalid}}" error-message="{{errorMessage}}"></paper-input>
+                        <paper-dropdown-menu class="flex vocalist" label="Set Vocalist">
                             <paper-listbox slot="dropdown-content" selected="{{item.editedVocalistId}}" attr-for-selected="vocalist-id">
                                 <template is="dom-repeat" items="{{vocalists}}" as="vocalist">
                                     <paper-item vocalist-id$="{{vocalist.id}}">{{vocalist.name}}</paper-item>
                                 </template>
                             </paper-listbox>
                         </paper-dropdown-menu>
-                        <paper-dropdown-menu label="Set Slot">
+                        <paper-dropdown-menu class="flex slot" label="Set Slot">
                             <paper-listbox slot="dropdown-content" selected="{{item.editedSlotId}}" attr-for-selected="slot-id">
                                 <template is="dom-repeat" items="{{slots}}" as="slot">
                                     <paper-item slot-id$="{{slot.id}}">{{slot.name}}</paper-item>
                                 </template>
                             </paper-listbox>
                         </paper-dropdown-menu>
-                        <paper-dropdown-menu label="Set Key">
+                        <paper-dropdown-menu class="flex key" label="Set Key">
                             <paper-listbox slot="dropdown-content" selected="{{item.editedKeyId}}" attr-for-selected="key-id">
                                 <template is="dom-repeat" items="{{keys}}" as="key">
                                     <paper-item key-id$="{{key.id}}">{{key.name}}</paper-item>
                                 </template>
                             </paper-listbox>
                         </paper-dropdown-menu>
-                        <paper-dropdown-menu label="Set Status">
+                        <paper-dropdown-menu class="flex status" label="Set Status">
                             <paper-listbox slot="dropdown-content" selected="{{item.editedStatusId}}" attr-for-selected="status-id">
                                 <template is="dom-repeat" items="{{statuses}}" as="status">
                                     <paper-item status-id$="{{status.id}}">{{status.name}}</paper-item>
