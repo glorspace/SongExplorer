@@ -7,6 +7,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using SongExplorer.Model;
 using Microsoft.AspNet.Identity;
+using System;
 
 namespace SongExplorer.Api.Controllers
 {
@@ -80,6 +81,7 @@ namespace SongExplorer.Api.Controllers
             }
 
             song.UserId = User.Identity.GetUserId();
+            song.DateAdded = DateTime.UtcNow;
 
             db.Songs.Add(song);
             db.SaveChanges();
