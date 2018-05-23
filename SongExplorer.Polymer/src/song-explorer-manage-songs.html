@@ -32,17 +32,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             paper-input.name {
                 min-width: 200px;
             }
+
             paper-input.vocalist {
                 min-width: 150px;
             }
+
             paper-input.slot {
                 min-width: 100px;
                 max-width: 200px;
             }
+
             paper-input.key {
                 min-width: 40px;
                 max-width: 60px;
             }
+
             paper-input.status {
                 min-width: 100px;
                 max-width: 200px;
@@ -162,65 +166,67 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-button raised on-click="_cancelAdd">Cancel</paper-button>
         </template>
         <template is="dom-if" if="[[items.length]]">
-            <template is="dom-repeat" items="[[items]]">
-                <div class="item layout horizontal center">
-                    <template is="dom-if" if="{{!item.editModeEnabled}}">
-                        <template is="dom-if" if="{{!item.confirmModeEnabled}}">
-                            <paper-input class="flex name" label="Name" value="{{item.name}}" readonly></paper-input>
-                            <paper-input class="flex vocalist" label="Vocalist" value="{{item.vocalist.name}}" always-float-label readonly></paper-input>
-                            <paper-input class="flex slot" label="Slot" value="{{item.slot.name}}" always-float-label readonly></paper-input>
-                            <paper-input class="flex key" label="Key" value="{{item.key.name}}" always-float-label readonly></paper-input>
-                            <paper-input class="flex status" label="Status" value="{{item.status.name}}" always-float-label readonly></paper-input>
-                            <paper-icon-button id="edit-{{item.id}}" class="icon-button" icon="song-explorer-icons:create" on-click="_editItem" alt="Edit" disabled$="{{disableButtons}}"></paper-icon-button>
-                            <paper-tooltip for="edit-{{item.id}}" offset="0" position="left" animation-delay="100">Edit</paper-tooltip>
-                            <paper-icon-button id="delete-{{item.id}}" class="icon-button" icon="song-explorer-icons:delete-forever" on-click="_confirmDelete" alt="Delete" disabled$="{{disableButtons}}"></paper-icon-button>
-                            <paper-tooltip for="delete-{{item.id}}" offset="0" position="right" animation-delay="100">Delete</paper-tooltip>
+            <paper-listbox multi>
+                <template is="dom-repeat" items="[[items]]">
+                    <paper-item class="item layout horizontal center">
+                        <template is="dom-if" if="{{!item.editModeEnabled}}">
+                            <template is="dom-if" if="{{!item.confirmModeEnabled}}">
+                                <paper-input class="flex name" label="Name" value="{{item.name}}" readonly></paper-input>
+                                <paper-input class="flex vocalist" label="Vocalist" value="{{item.vocalist.name}}" always-float-label readonly></paper-input>
+                                <paper-input class="flex slot" label="Slot" value="{{item.slot.name}}" always-float-label readonly></paper-input>
+                                <paper-input class="flex key" label="Key" value="{{item.key.name}}" always-float-label readonly></paper-input>
+                                <paper-input class="flex status" label="Status" value="{{item.status.name}}" always-float-label readonly></paper-input>
+                                <paper-icon-button id="edit-{{item.id}}" class="icon-button" icon="song-explorer-icons:create" on-click="_editItem" alt="Edit" disabled$="{{disableButtons}}"></paper-icon-button>
+                                <paper-tooltip for="edit-{{item.id}}" offset="0" position="left" animation-delay="100">Edit</paper-tooltip>
+                                <paper-icon-button id="delete-{{item.id}}" class="icon-button" icon="song-explorer-icons:delete-forever" on-click="_confirmDelete" alt="Delete" disabled$="{{disableButtons}}"></paper-icon-button>
+                                <paper-tooltip for="delete-{{item.id}}" offset="0" position="right" animation-delay="100">Delete</paper-tooltip>
+                            </template>
+                            <template is="dom-if" if="{{item.confirmModeEnabled}}">
+                                <div class="flex">Are you sure you want to delete '{{item.name}}'?</div>
+                                <paper-icon-button id="yes-{{item.id}}" class="icon-button" icon="song-explorer-icons:check" on-click="_deleteItem" alt="Yes"></paper-icon-button>
+                                <paper-tooltip for="yes-{{item.id}}" offset="0" position="left" animation-delay="100">Yes</paper-tooltip>
+                                <paper-icon-button id="no-{{item.id}}" class="icon-button" icon="song-explorer-icons:close" on-click="_cancelDelete" alt="No"></paper-icon-button>
+                                <paper-tooltip for="no-{{item.id}}" offset="0" position="right" animation-delay="100">No</paper-tooltip>
+                            </template>
                         </template>
-                        <template is="dom-if" if="{{item.confirmModeEnabled}}">
-                            <div class="flex">Are you sure you want to delete '{{item.name}}'?</div>
-                            <paper-icon-button id="yes-{{item.id}}" class="icon-button" icon="song-explorer-icons:check" on-click="_deleteItem" alt="Yes"></paper-icon-button>
-                            <paper-tooltip for="yes-{{item.id}}" offset="0" position="left" animation-delay="100">Yes</paper-tooltip>
-                            <paper-icon-button id="no-{{item.id}}" class="icon-button" icon="song-explorer-icons:close" on-click="_cancelDelete" alt="No"></paper-icon-button>
-                            <paper-tooltip for="no-{{item.id}}" offset="0" position="right" animation-delay="100">No</paper-tooltip>
+                        <template is="dom-if" if="{{item.editModeEnabled}}">
+                            <paper-input class="flex name" label="Edit [[itemType]] Name" value="{{item.editedName}}" invalid$="{{itemInvalid}}" error-message="{{errorMessage}}"></paper-input>
+                            <paper-dropdown-menu class="flex vocalist" label="Set Vocalist">
+                                <paper-listbox slot="dropdown-content" selected="{{item.editedVocalistId}}" attr-for-selected="vocalist-id">
+                                    <template is="dom-repeat" items="{{vocalists}}" as="vocalist">
+                                        <paper-item vocalist-id$="{{vocalist.id}}">{{vocalist.name}}</paper-item>
+                                    </template>
+                                </paper-listbox>
+                            </paper-dropdown-menu>
+                            <paper-dropdown-menu class="flex slot" label="Set Slot">
+                                <paper-listbox slot="dropdown-content" selected="{{item.editedSlotId}}" attr-for-selected="slot-id">
+                                    <template is="dom-repeat" items="{{slots}}" as="slot">
+                                        <paper-item slot-id$="{{slot.id}}">{{slot.name}}</paper-item>
+                                    </template>
+                                </paper-listbox>
+                            </paper-dropdown-menu>
+                            <paper-dropdown-menu class="flex key" label="Set Key">
+                                <paper-listbox slot="dropdown-content" selected="{{item.editedKeyId}}" attr-for-selected="key-id">
+                                    <template is="dom-repeat" items="{{keys}}" as="key">
+                                        <paper-item key-id$="{{key.id}}">{{key.name}}</paper-item>
+                                    </template>
+                                </paper-listbox>
+                            </paper-dropdown-menu>
+                            <paper-dropdown-menu class="flex status" label="Set Status">
+                                <paper-listbox slot="dropdown-content" selected="{{item.editedStatusId}}" attr-for-selected="status-id">
+                                    <template is="dom-repeat" items="{{statuses}}" as="status">
+                                        <paper-item status-id$="{{status.id}}">{{status.name}}</paper-item>
+                                    </template>
+                                </paper-listbox>
+                            </paper-dropdown-menu>
+                            <paper-icon-button id="save-{{item.id}}" class="icon-button" icon="song-explorer-icons:check" on-click="_saveEdit" alt="Save" disabled$="{{_disableSave(item.name, item.editedName)}}"></paper-icon-button>
+                            <paper-tooltip for="save-{{item.id}}" offset="0" position="left" animation-delay="100">Save</paper-tooltip>
+                            <paper-icon-button id="cancel-{{item.id}}" class="icon-button" icon="song-explorer-icons:close" on-click="_cancelEdit" alt="Cancel"></paper-icon-button>
+                            <paper-tooltip for="cancel-{{item.id}}" offset="0" position="right" animation-delay="100">Cancel</paper-tooltip>
                         </template>
-                    </template>
-                    <template is="dom-if" if="{{item.editModeEnabled}}">
-                        <paper-input class="flex name" label="Edit [[itemType]] Name" value="{{item.editedName}}" invalid$="{{itemInvalid}}" error-message="{{errorMessage}}"></paper-input>
-                        <paper-dropdown-menu class="flex vocalist" label="Set Vocalist">
-                            <paper-listbox slot="dropdown-content" selected="{{item.editedVocalistId}}" attr-for-selected="vocalist-id">
-                                <template is="dom-repeat" items="{{vocalists}}" as="vocalist">
-                                    <paper-item vocalist-id$="{{vocalist.id}}">{{vocalist.name}}</paper-item>
-                                </template>
-                            </paper-listbox>
-                        </paper-dropdown-menu>
-                        <paper-dropdown-menu class="flex slot" label="Set Slot">
-                            <paper-listbox slot="dropdown-content" selected="{{item.editedSlotId}}" attr-for-selected="slot-id">
-                                <template is="dom-repeat" items="{{slots}}" as="slot">
-                                    <paper-item slot-id$="{{slot.id}}">{{slot.name}}</paper-item>
-                                </template>
-                            </paper-listbox>
-                        </paper-dropdown-menu>
-                        <paper-dropdown-menu class="flex key" label="Set Key">
-                            <paper-listbox slot="dropdown-content" selected="{{item.editedKeyId}}" attr-for-selected="key-id">
-                                <template is="dom-repeat" items="{{keys}}" as="key">
-                                    <paper-item key-id$="{{key.id}}">{{key.name}}</paper-item>
-                                </template>
-                            </paper-listbox>
-                        </paper-dropdown-menu>
-                        <paper-dropdown-menu class="flex status" label="Set Status">
-                            <paper-listbox slot="dropdown-content" selected="{{item.editedStatusId}}" attr-for-selected="status-id">
-                                <template is="dom-repeat" items="{{statuses}}" as="status">
-                                    <paper-item status-id$="{{status.id}}">{{status.name}}</paper-item>
-                                </template>
-                            </paper-listbox>
-                        </paper-dropdown-menu>
-                        <paper-icon-button id="save-{{item.id}}" class="icon-button" icon="song-explorer-icons:check" on-click="_saveEdit" alt="Save" disabled$="{{_disableSave(item.name, item.editedName)}}"></paper-icon-button>
-                        <paper-tooltip for="save-{{item.id}}" offset="0" position="left" animation-delay="100">Save</paper-tooltip>
-                        <paper-icon-button id="cancel-{{item.id}}" class="icon-button" icon="song-explorer-icons:close" on-click="_cancelEdit" alt="Cancel"></paper-icon-button>
-                        <paper-tooltip for="cancel-{{item.id}}" offset="0" position="right" animation-delay="100">Cancel</paper-tooltip>
-                    </template>
-                </div>
-            </template>
+                    </paper-item>
+                </template>
+            </paper-listbox>
             <template is="dom-if" if="{{deleteError}}">
                 <div class="item error">[[errorMessage]]</div>
             </template>
