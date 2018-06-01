@@ -17,10 +17,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="song-explorer-manage-simple-entity.html">
 
 <dom-module id="song-explorer-manage-songs">
     <template>
@@ -141,6 +143,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </template>
                 </paper-listbox>
             </paper-dropdown-menu>
+            <paper-icon-button id="manage-vocalists-icon" class="icon-button" icon="song-explorer-icons:settings" on-click="_openVocalistsDialog"></paper-icon-button>
+            <paper-tooltip for="manage-vocalists-icon" offset="0" position="right" animation-delay="100">Manage Vocalists</paper-tooltip>
             <paper-dropdown-menu class="flex slot" label="Set Slot">
                 <paper-listbox slot="dropdown-content" selected="{{newItem.slotId}}" attr-for-selected="slot-id">
                     <template is="dom-repeat" items="{{slots}}" as="slot">
@@ -148,6 +152,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </template>
                 </paper-listbox>
             </paper-dropdown-menu>
+            <paper-icon-button id="manage-slots-icon" class="icon-button" icon="song-explorer-icons:settings" on-click="_openSlotsDialog"></paper-icon-button>
+            <paper-tooltip for="manage-slots-icon" offset="0" position="right" animation-delay="100">Manage Slots</paper-tooltip>
             <paper-dropdown-menu class="flex key" label="Set Key">
                 <paper-listbox slot="dropdown-content" selected="{{newItem.keyId}}" attr-for-selected="key-id">
                     <template is="dom-repeat" items="{{keys}}" as="key">
@@ -198,6 +204,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                     </template>
                                 </paper-listbox>
                             </paper-dropdown-menu>
+                            <paper-icon-button id="manage-vocalists-{{item.id}}" class="icon-button" icon="song-explorer-icons:settings" on-click="_openVocalistsDialog"></paper-icon-button>
+                            <paper-tooltip for="manage-vocalists-{{item.id}}" offset="0" position="right" animation-delay="100">Manage Vocalists</paper-tooltip>
                             <paper-dropdown-menu class="flex slot" label="Set Slot">
                                 <paper-listbox slot="dropdown-content" selected="{{item.editedSlotId}}" attr-for-selected="slot-id">
                                     <template is="dom-repeat" items="{{slots}}" as="slot">
@@ -205,6 +213,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                     </template>
                                 </paper-listbox>
                             </paper-dropdown-menu>
+                            <paper-icon-button id="manage-slots-{{item.id}}" class="icon-button" icon="song-explorer-icons:settings" on-click="_openSlotsDialog"></paper-icon-button>
+                            <paper-tooltip for="manage-slots-{{item.id}}" offset="0" position="right" animation-delay="100">Manage Slots</paper-tooltip>
                             <paper-dropdown-menu class="flex key" label="Set Key">
                                 <paper-listbox slot="dropdown-content" selected="{{item.editedKeyId}}" attr-for-selected="key-id">
                                     <template is="dom-repeat" items="{{keys}}" as="key">
@@ -240,6 +250,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <span>Loading...</span>
             </div>
         </template>
+        <paper-dialog id="vocalistsDialog">
+            <song-explorer-manage-simple-entity item-type="Vocalist" api-url="{{_computeApiUrl(baseApiUrl, 'Vocalists')}}" token-info="[[tokenInfo]]"></song-explorer-manage-simple-entity>
+        </paper-dialog>
+        <paper-dialog id="slotsDialog">
+            <song-explorer-manage-simple-entity item-type="Slot" api-url="{{_computeApiUrl(baseApiUrl, 'Slots')}}" token-info="[[tokenInfo]]"></song-explorer-manage-simple-entity>
+        </paper-dialog>
     </template>
 
     <script>
@@ -436,6 +452,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             _computeApiUrl(baseApiUrl, entity) {
                 return [baseApiUrl, entity].join('/');
+            }
+
+            _openVocalistsDialog(event) {
+                this.$.vocalistsDialog.opened = true;
+            }
+
+            _openSlotsDialog(event) {
+                this.$.slotsDialog.opened = true;
             }
         }
 
