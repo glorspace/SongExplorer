@@ -10,7 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="shared-styles.html">
-<link rel="import" href="song-explorer-simple-entity.html">
+<link rel="import" href="song-explorer-manage-simple-entity.html">
 
 <dom-module id="song-explorer-slots">
     <template>
@@ -26,7 +26,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div class="circle">Slots</div>
             <h1>Configure Slots</h1>
             <p>Song Explorer uses a concept we call "slots" to help you organize and properly populate a set list. When building a set list, you can configure a template that contains slots in an order that your specify. Then songs that are labeled with a particular slot can be channeled into the correct slot in your set list template.</p>
-            <song-explorer-simple-entity item-type="Slot" api-url="[[apiUrl]]" token-info="[[tokenInfo]]"></song-explorer-simple-entity>
+            <song-explorer-manage-simple-entity item-type="Slot" api-url="[[apiUrl]]" token-info="[[tokenInfo]]"></song-explorer-manage-simple-entity>
         </div>
     </template>
 

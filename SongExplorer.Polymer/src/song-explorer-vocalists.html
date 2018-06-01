@@ -10,7 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="shared-styles.html">
-<link rel="import" href="song-explorer-simple-entity.html">
+<link rel="import" href="song-explorer-manage-simple-entity.html">
 
 <dom-module id="song-explorer-vocalists">
     <template>
@@ -26,7 +26,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div class="circle">Vocalists</div>
             <h1>Manage Vocalists</h1>
             <p>It can be helpful to organize songs by lead vocalist. This aids in choosing songs for a performance where a particular vocalist is scheduled to attend, or to help balance a set across several vocalists.</p>
-            <song-explorer-simple-entity item-type="Vocalist" api-url="[[apiUrl]]" token-info="[[tokenInfo]]"></song-explorer-simple-entity>
+            <song-explorer-manage-simple-entity item-type="Vocalist" api-url="[[apiUrl]]" token-info="[[tokenInfo]]"></song-explorer-manage-simple-entity>
         </div>
     </template>
 

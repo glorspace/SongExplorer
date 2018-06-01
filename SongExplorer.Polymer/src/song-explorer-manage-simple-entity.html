@@ -21,7 +21,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="shared-styles.html">
 
-<dom-module id="song-explorer-simple-entity">
+<dom-module id="song-explorer-manage-simple-entity">
     <template>
         <style include="shared-styles iron-flex iron-flex-alignment">
             :host {
@@ -131,8 +131,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
 
     <script>
-        class SongExplorerSimpleEntity extends Polymer.Element {
-            static get is() { return 'song-explorer-simple-entity'; }
+        class SongExplorerManageSimpleEntity extends Polymer.Element {
+            static get is() { return 'song-explorer-manage-simple-entity'; }
             static get properties() {
                 return {
                     apiUrl: {
@@ -298,6 +298,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
         }
 
-        window.customElements.define(SongExplorerSimpleEntity.is, SongExplorerSimpleEntity);
+        window.customElements.define(SongExplorerManageSimpleEntity.is, SongExplorerManageSimpleEntity);
     </script>
 </dom-module>
