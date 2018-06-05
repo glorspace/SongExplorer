@@ -86,9 +86,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-button raised on-click="_cancelAdd">Cancel</paper-button>
         </template>
         <template is="dom-if" if="[[items.length]]">
-            <paper-listbox>
                 <template is="dom-repeat" items="[[items]]">
-                    <paper-item class="item layout horizontal center">
+                    <div class="item layout horizontal center">
                         <template is="dom-if" if="{{!item.editModeEnabled}}">
                             <template is="dom-if" if="{{!item.confirmModeEnabled}}">
                                 <div class="flex">{{item.name}}</div>
@@ -112,9 +111,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             <paper-icon-button id="cancel-{{item.id}}" class="icon-button" icon="song-explorer-icons:close" on-click="_cancelEdit" alt="Cancel"></paper-icon-button>
                             <paper-tooltip for="cancel-{{item.id}}" offset="0" position="right" animation-delay="100">Cancel</paper-tooltip>
                         </template>
-                    </paper-item>
+                    </div>
                 </template>
-            </paper-listbox>
             <template is="dom-if" if="{{deleteError}}">
                 <div class="item error">[[errorMessage]]</div>
             </template>
