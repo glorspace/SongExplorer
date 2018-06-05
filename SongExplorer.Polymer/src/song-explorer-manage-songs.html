@@ -344,10 +344,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             _addItem() {
                 this.itemInvalid = false;
                 this.deleteError = false;
+                this.disableButtons = true;
                 this.addModeEnabled = true;
             }
 
             _cancelAdd() {
+                this.disableButtons = false;
                 this.addModeEnabled = false;
             }
 
@@ -356,6 +358,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             _postResponse() {
+                this.disableButtons = false;
                 this.addModeEnabled = false;
                 this.newItem = {};
                 this.$.getRequest.generateRequest();
