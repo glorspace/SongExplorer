@@ -130,12 +130,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div>
                 <paper-button raised on-click="_addItem" disabled$="{{disableButtons}}">
                     <iron-icon icon="song-explorer-icons:add"></iron-icon>
-                    Add [[itemType]]
+                    Add Song
                 </paper-button>
             </div>
         </template>
         <template is="dom-if" if="[[addModeEnabled]]">
-            <paper-input class="flex name" label="New [[itemType]] Name" value="{{newItem.name}}" invalid$="{{itemInvalid}}" error-message="{{errorMessage}}"></paper-input>
+            <paper-input class="flex name" label="New Song Title" value="{{newItem.name}}" invalid$="{{itemInvalid}}" error-message="{{errorMessage}}"></paper-input>
             <paper-dropdown-menu class="flex vocalist" label="Set Vocalist">
                 <paper-listbox slot="dropdown-content" selected="{{newItem.vocalistId}}" attr-for-selected="vocalist-id">
                     <template is="dom-repeat" items="{{vocalists}}" as="vocalist">
@@ -177,7 +177,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <paper-item class="item layout horizontal center">
                         <template is="dom-if" if="{{!item.editModeEnabled}}">
                             <template is="dom-if" if="{{!item.confirmModeEnabled}}">
-                                <paper-input class="flex name" label="Name" value="{{item.name}}" readonly></paper-input>
+                                <paper-input class="flex name" label="Song Title" value="{{item.name}}" readonly></paper-input>
                                 <paper-input class="flex vocalist" label="Vocalist" value="{{item.vocalist.name}}" always-float-label readonly></paper-input>
                                 <paper-input class="flex slot" label="Slot" value="{{item.slot.name}}" always-float-label readonly></paper-input>
                                 <paper-input class="flex key" label="Key" value="{{item.key.name}}" always-float-label readonly></paper-input>
@@ -196,7 +196,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             </template>
                         </template>
                         <template is="dom-if" if="{{item.editModeEnabled}}">
-                            <paper-input class="flex name" label="Edit [[itemType]] Name" value="{{item.editedName}}" invalid$="{{itemInvalid}}" error-message="{{errorMessage}}"></paper-input>
+                            <paper-input class="flex name" label="Edit Song Title" value="{{item.editedName}}" invalid$="{{itemInvalid}}" error-message="{{errorMessage}}"></paper-input>
                             <paper-dropdown-menu class="flex vocalist" label="Set Vocalist">
                                 <paper-listbox slot="dropdown-content" selected="{{item.editedVocalistId}}" attr-for-selected="vocalist-id">
                                     <template is="dom-repeat" items="{{vocalists}}" as="vocalist">
@@ -268,10 +268,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     },
                     tokenInfo: {
                         type: Object
-                    },
-                    itemType: {
-                        type: String,
-                        notify: true
                     },
                     items: {
                         type: Array,
