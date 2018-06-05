@@ -1,0 +1,444 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/datetime-picker/datetime-picker.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="song-explorer-manage-simple-entity.html">
+
+<dom-module id="song-explorer-manage-set-lists">
+    <template>
+        <style include="shared-styles iron-flex iron-flex-alignment">
+            :host {
+                display: block;
+            }
+
+            paper-input.name {
+                min-width: 200px;
+            }
+
+            paper-input.vocalist {
+                min-width: 150px;
+            }
+
+            paper-input.slot {
+                min-width: 100px;
+                max-width: 200px;
+            }
+
+            paper-input.key {
+                min-width: 40px;
+                max-width: 60px;
+            }
+
+            paper-input.status {
+                min-width: 100px;
+                max-width: 200px;
+            }
+        </style>
+
+        <iron-ajax
+            auto
+            id="getRequest"
+            url="{{_computeApiUrl(baseApiUrl, 'SetLists')}}"
+            handle-as="json"
+            headers="{{_computeHeaders(tokenInfo)}}"
+            last-response="{{items}}"
+            on-response="_getResponse"
+            on-error="_getError"
+            loading="{{loading}}">
+        </iron-ajax>
+        <iron-ajax
+            id="postRequest"
+            url="{{_computeApiUrl(baseApiUrl, 'SetLists')}}"
+            method="POST"
+            content-type="application/json"            
+            handle-as="json"
+            headers="{{_computeHeaders(tokenInfo)}}"
+            body="{{newItem}}"
+            on-response="_postResponse"
+            on-error="_postError"
+            loading="{{loading}}">
+        </iron-ajax>
+        <iron-ajax
+            id="putRequest"
+            method="PUT"
+            content-type="application/json"            
+            handle-as="json"
+            headers="{{_computeHeaders(tokenInfo)}}"
+            on-response="_putResponse"
+            on-error="_putError"
+            loading="{{loading}}">
+        </iron-ajax>
+        <iron-ajax
+            id="deleteRequest"
+            method="DELETE"          
+            handle-as="json"
+            headers="{{_computeHeaders(tokenInfo)}}"
+            on-response="_deleteResponse"
+            on-error="_deleteError"
+            loading="{{loading}}">
+        </iron-ajax>
+
+        <template is="dom-if" if="[[!addModeEnabled]]">
+            <div>
+                <paper-button raised on-click="_addItem" disabled$="{{disableButtons}}">
+                    <iron-icon icon="song-explorer-icons:add"></iron-icon>
+                    Add Set List
+                </paper-button>
+            </div>
+        </template>
+        <template is="dom-if" if="[[addModeEnabled]]">
+            <paper-input class="flex name" label="New Event Title" value="{{newItem.name}}" invalid$="{{itemInvalid}}" error-message="{{errorMessage}}"></paper-input>
+            <datetime-picker datetime="{{newItem.dateTime}}"></datetime-picker>
+            <!-- <paper-dropdown-menu class="flex vocalist" label="Set Vocalist">
+                <paper-listbox slot="dropdown-content" selected="{{newItem.vocalistId}}" attr-for-selected="vocalist-id">
+                    <template is="dom-repeat" items="{{vocalists}}" as="vocalist">
+                        <paper-item vocalist-id$="{{vocalist.id}}">{{vocalist.name}}</paper-item>
+                    </template>
+                </paper-listbox>
+            </paper-dropdown-menu>
+            <paper-icon-button id="manage-vocalists-icon" class="icon-button" icon="song-explorer-icons:settings" on-click="_openVocalistsDialog"></paper-icon-button>
+            <paper-tooltip for="manage-vocalists-icon" offset="0" position="right" animation-delay="100">Manage Vocalists</paper-tooltip>
+            <paper-dropdown-menu class="flex slot" label="Set Slot">
+                <paper-listbox slot="dropdown-content" selected="{{newItem.slotId}}" attr-for-selected="slot-id">
+                    <template is="dom-repeat" items="{{slots}}" as="slot">
+                        <paper-item slot-id$="{{slot.id}}">{{slot.name}}</paper-item>
+                    </template>
+                </paper-listbox>
+            </paper-dropdown-menu>
+            <paper-icon-button id="manage-slots-icon" class="icon-button" icon="song-explorer-icons:settings" on-click="_openSlotsDialog"></paper-icon-button>
+            <paper-tooltip for="manage-slots-icon" offset="0" position="right" animation-delay="100">Manage Slots</paper-tooltip>
+            <paper-dropdown-menu class="flex key" label="Set Key">
+                <paper-listbox slot="dropdown-content" selected="{{newItem.keyId}}" attr-for-selected="key-id">
+                    <template is="dom-repeat" items="{{keys}}" as="key">
+                        <paper-item key-id$="{{key.id}}">{{key.name}}</paper-item>
+                    </template>
+                </paper-listbox>
+            </paper-dropdown-menu>
+            <paper-dropdown-menu class="flex status" label="Set Status">
+                <paper-listbox slot="dropdown-content" selected="{{newItem.statusId}}" attr-for-selected="status-id">
+                    <template is="dom-repeat" items="{{statuses}}" as="status">
+                        <paper-item status-id$="{{status.id}}">{{status.name}}</paper-item>
+                    </template>
+                </paper-listbox>
+            </paper-dropdown-menu> -->
+            <paper-button raised on-click="_submitAdd" disabled$="{{_disableSubmit(newItem.name, newItem.dateTime)}}">Submit</paper-button>
+            <paper-button raised on-click="_cancelAdd">Cancel</paper-button>
+        </template>
+        <template is="dom-if" if="[[items.length]]">
+            <template is="dom-repeat" items="[[items]]">
+                <paper-card heading="{{item.name}} ({{item.dateTime}})">
+                    <template is="dom-repeat" items="[[item.songs]]" as="song">
+                        <div class="item">{{song.name}}</div>
+                    </template>
+                </paper-card>
+
+                <!-- <paper-item class="item layout horizontal center">
+                    <template is="dom-if" if="{{!item.editModeEnabled}}">
+                        <template is="dom-if" if="{{!item.confirmModeEnabled}}">
+                            <paper-input class="flex name" label="Name" value="{{item.name}}" readonly></paper-input>
+                            <paper-input class="flex vocalist" label="Vocalist" value="{{item.vocalist.name}}" always-float-label readonly></paper-input>
+                            <paper-input class="flex slot" label="Slot" value="{{item.slot.name}}" always-float-label readonly></paper-input>
+                            <paper-input class="flex key" label="Key" value="{{item.key.name}}" always-float-label readonly></paper-input>
+                            <paper-input class="flex status" label="Status" value="{{item.status.name}}" always-float-label readonly></paper-input>
+                            <paper-icon-button id="edit-{{item.id}}" class="icon-button" icon="song-explorer-icons:create" on-click="_editItem" alt="Edit" disabled$="{{disableButtons}}"></paper-icon-button>
+                            <paper-tooltip for="edit-{{item.id}}" offset="0" position="left" animation-delay="100">Edit</paper-tooltip>
+                            <paper-icon-button id="delete-{{item.id}}" class="icon-button" icon="song-explorer-icons:delete-forever" on-click="_confirmDelete" alt="Delete" disabled$="{{disableButtons}}"></paper-icon-button>
+                            <paper-tooltip for="delete-{{item.id}}" offset="0" position="right" animation-delay="100">Delete</paper-tooltip>
+                        </template>
+                        <template is="dom-if" if="{{item.confirmModeEnabled}}">
+                            <div class="flex">Are you sure you want to delete '{{item.name}}' on {{item.dateTime}}?</div>
+                            <paper-icon-button id="yes-{{item.id}}" class="icon-button" icon="song-explorer-icons:check" on-click="_deleteItem" alt="Yes"></paper-icon-button>
+                            <paper-tooltip for="yes-{{item.id}}" offset="0" position="left" animation-delay="100">Yes</paper-tooltip>
+                            <paper-icon-button id="no-{{item.id}}" class="icon-button" icon="song-explorer-icons:close" on-click="_cancelDelete" alt="No"></paper-icon-button>
+                            <paper-tooltip for="no-{{item.id}}" offset="0" position="right" animation-delay="100">No</paper-tooltip>
+                        </template>
+                    </template>
+                    <template is="dom-if" if="{{item.editModeEnabled}}">
+                        <paper-input class="flex name" label="Edit Event Title" value="{{item.editedName}}" invalid$="{{itemInvalid}}" error-message="{{errorMessage}}"></paper-input>
+                        <paper-dropdown-menu class="flex vocalist" label="Set Vocalist">
+                            <paper-listbox slot="dropdown-content" selected="{{item.editedVocalistId}}" attr-for-selected="vocalist-id">
+                                <template is="dom-repeat" items="{{vocalists}}" as="vocalist">
+                                    <paper-item vocalist-id$="{{vocalist.id}}">{{vocalist.name}}</paper-item>
+                                </template>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                        <paper-icon-button id="manage-vocalists-{{item.id}}" class="icon-button" icon="song-explorer-icons:settings" on-click="_openVocalistsDialog"></paper-icon-button>
+                        <paper-tooltip for="manage-vocalists-{{item.id}}" offset="0" position="right" animation-delay="100">Manage Vocalists</paper-tooltip>
+                        <paper-dropdown-menu class="flex slot" label="Set Slot">
+                            <paper-listbox slot="dropdown-content" selected="{{item.editedSlotId}}" attr-for-selected="slot-id">
+                                <template is="dom-repeat" items="{{slots}}" as="slot">
+                                    <paper-item slot-id$="{{slot.id}}">{{slot.name}}</paper-item>
+                                </template>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                        <paper-icon-button id="manage-slots-{{item.id}}" class="icon-button" icon="song-explorer-icons:settings" on-click="_openSlotsDialog"></paper-icon-button>
+                        <paper-tooltip for="manage-slots-{{item.id}}" offset="0" position="right" animation-delay="100">Manage Slots</paper-tooltip>
+                        <paper-dropdown-menu class="flex key" label="Set Key">
+                            <paper-listbox slot="dropdown-content" selected="{{item.editedKeyId}}" attr-for-selected="key-id">
+                                <template is="dom-repeat" items="{{keys}}" as="key">
+                                    <paper-item key-id$="{{key.id}}">{{key.name}}</paper-item>
+                                </template>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                        <paper-dropdown-menu class="flex status" label="Set Status">
+                            <paper-listbox slot="dropdown-content" selected="{{item.editedStatusId}}" attr-for-selected="status-id">
+                                <template is="dom-repeat" items="{{statuses}}" as="status">
+                                    <paper-item status-id$="{{status.id}}">{{status.name}}</paper-item>
+                                </template>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                        <paper-icon-button id="save-{{item.id}}" class="icon-button" icon="song-explorer-icons:check" on-click="_saveEdit" alt="Save" disabled$="{{_disableSave(item.name, item.editedName)}}"></paper-icon-button>
+                        <paper-tooltip for="save-{{item.id}}" offset="0" position="left" animation-delay="100">Save</paper-tooltip>
+                        <paper-icon-button id="cancel-{{item.id}}" class="icon-button" icon="song-explorer-icons:close" on-click="_cancelEdit" alt="Cancel"></paper-icon-button>
+                        <paper-tooltip for="cancel-{{item.id}}" offset="0" position="right" animation-delay="100">Cancel</paper-tooltip>
+                    </template>
+                </paper-item> -->
+            </template>
+            <template is="dom-if" if="{{deleteError}}">
+                <div class="item error">[[errorMessage]]</div>
+            </template>
+        </template>
+        <template is="dom-if" if="[[!items.length]]">
+            <div class="item error">[[noItemsMessage]]</div>
+        </template>
+        <template is="dom-if" if="{{loading}}">
+            <div class="spinner">                 
+                <paper-spinner-lite active></paper-spinner-lite>
+                <span>Loading...</span>
+            </div>
+        </template>
+        <paper-dialog id="vocalistsDialog">
+            <song-explorer-manage-simple-entity item-type="Vocalist" api-url="{{_computeApiUrl(baseApiUrl, 'Vocalists')}}" token-info="[[tokenInfo]]"></song-explorer-manage-simple-entity>
+        </paper-dialog>
+        <paper-dialog id="slotsDialog">
+            <song-explorer-manage-simple-entity item-type="Slot" api-url="{{_computeApiUrl(baseApiUrl, 'Slots')}}" token-info="[[tokenInfo]]"></song-explorer-manage-simple-entity>
+        </paper-dialog>
+    </template>
+
+    <script>
+        class SongExplorerManageSetLists extends Polymer.Element {
+            static get is() { return 'song-explorer-manage-set-lists'; }
+            static get properties() {
+                return {
+                    baseApiUrl: {
+                        type: String
+                    },
+                    tokenInfo: {
+                        type: Object
+                    },
+                    items: {
+                        type: Array,
+                        notify: true
+                    },
+                    addModeEnabled: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    disableButtons: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    newItem: {
+                        type: Object,
+                        notify: true,
+                        value: {}
+                    },
+                    itemInvalid: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    errorMessage: {
+                        type: String,
+                        notify: true,
+                        value: 'Server error. Please try again later.'
+                    },
+                    deleteError: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    noItemsMessage: {
+                        type: String,
+                        notify: true
+                    },
+                    vocalists: {
+                        type: Array
+                    },
+                    slots: {
+                        type: Array
+                    },
+                    keys: {
+                        type: Array
+                    },
+                    statuses: {
+                        type: Array
+                    }
+                };
+            }
+            _computeHeaders(tokenInfo) {
+                if (tokenInfo)
+                    return {
+                        "Authorization": "Bearer " + tokenInfo.access_token
+                    };
+            }
+
+            _getResponse() {
+                if (!this.items.length)
+                    this.noItemsMessage = 'No items defined.';
+            }
+
+            _getError(error) {
+                this.noItemsMessage = 'There was an error retrieving data from the server.';
+            }
+
+            _addItem() {
+                this.itemInvalid = false;
+                this.deleteError = false;
+                this.disableButtons = true;
+                this.addModeEnabled = true;
+            }
+
+            _cancelAdd() {
+                this.disableButtons = false;
+                this.addModeEnabled = false;
+            }
+
+            _submitAdd() {
+                this.$.postRequest.generateRequest();
+            }
+
+            _postResponse() {
+                this.disableButtons = false;
+                this.addModeEnabled = false;
+                this.newItem = {};
+                this.$.getRequest.generateRequest();
+            }
+
+            _postError() {
+                this.itemInvalid = true;
+            }
+
+            _deleteItem(event) {
+                this.deleteError = false;
+                this.disableButtons = false;
+                this.$.deleteRequest.url = [this.baseApiUrl, 'Songs', event.model.item.id].join('/');
+                this.$.deleteRequest.generateRequest();
+            }
+
+            _deleteResponse() {
+                this.$.getRequest.generateRequest();
+            }
+
+            _deleteError() {
+                this.deleteError = true;
+            }
+
+            _editItem(event) {
+                this.disableButtons = true;
+                event.model.item.editedName = event.model.item.name;
+                event.model.item.editedVocalistId = event.model.item.vocalistId;
+                event.model.item.editedSlotId = event.model.item.slotId;
+                event.model.item.editedKeyId = event.model.item.keyId;
+                event.model.item.editedStatusId = event.model.item.statusId;
+                event.model.set("item.editModeEnabled", true);
+            }
+
+            _saveEdit(event) {
+                event.model.item.name = event.model.item.editedName;
+                event.model.item.vocalistId = event.model.item.editedVocalistId;
+                event.model.item.slotId = event.model.item.editedSlotId;
+                event.model.item.keyId = event.model.item.editedKeyId;
+                event.model.item.statusId = event.model.item.editedStatusId;
+                event.model.item.vocalist = null;
+                event.model.item.slot = null;
+                event.model.item.key = null;
+                event.model.item.status = null;
+
+                this.$.putRequest.url = [this.baseApiUrl, 'Songs', event.model.item.id].join('/');
+                this.$.putRequest.body = event.model.item;
+                this.$.putRequest.generateRequest();
+            }
+
+            _cancelEdit(event) {
+                this.disableButtons = false;
+                event.model.set("item.editModeEnabled", false);
+            }            
+
+            _putResponse() {
+                this.disableButtons = false;
+                this._disableEditMode();
+                this.$.getRequest.generateRequest();
+            }
+
+            _putError() {
+                this.itemInvalid = true;
+            }
+            
+            _disableEditMode() {
+                this.items.some(function(item) {
+                    if (item.editModeEnabled) {
+                        item.editModeEnabled = false;
+                        return true;
+                    }
+                });
+            }
+
+            _disableSubmit(newItemName, newItemDateTime) {
+                if (newItemName && newItemName.length && newItemDateTime)
+                    return false;
+                return true;
+            }
+
+            _disableSave(name, editedName) {
+                return name === editedName;
+            }
+
+            _confirmDelete(event) {
+                this.disableButtons = true;
+                event.model.set("item.confirmModeEnabled", true);
+            }            
+
+            _cancelDelete(event) {
+                this.disableButtons = false;
+                event.model.set("item.confirmModeEnabled", false);
+            }
+
+            _computeApiUrl(baseApiUrl, entity) {
+                return [baseApiUrl, entity].join('/');
+            }
+
+            _openVocalistsDialog(event) {
+                this.$.vocalistsDialog.opened = true;
+            }
+
+            _openSlotsDialog(event) {
+                this.$.slotsDialog.opened = true;
+            }
+        }
+
+        window.customElements.define(SongExplorerManageSetLists.is, SongExplorerManageSetLists);
+    </script>
+</dom-module>
