@@ -1,0 +1,35 @@
+.appcontainer {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+.apptoolbar {
+    position: fixed;
+    z-index: 2;
+}
+
+h1.appname {
+    margin-left: 8px;
+}
+
+.appsidenavcontainer {
+    flex: 1;
+    margin-top: 56px;
+}
+
+.appsidenav {
+    width: 250px;
+}
+
+.flex {
+    flex: 1 0 auto;
+}
+
+.routecontainer {
+    margin-top: 56px;
+}
