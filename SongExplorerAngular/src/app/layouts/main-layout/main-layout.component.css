@@ -1,0 +1,17 @@
+
+.appsidenavcontainer {
+    flex: 1;
+    margin-top: 56px;
+}
+
+.appsidenav {
+    width: 250px;
+}
+
+.flex {
+    flex: 1 0 auto;
+}
+
+.routecontainer {
+    margin-top: 56px;
+}

@@ -3,13 +3,22 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
-import { AppMaterialModule } from './app-material/app-material.module';
 import { CoreModule } from './core/core.module';
-import { AppRoutingModule } from './/app-routing.module';
+import { AppRoutingModule } from './app-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SongsComponent } from './songs/songs.component';
 import { MusiciansComponent } from './musicians/musicians.component';
 import { AccountComponent } from './account/account.component';
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
+import { AuthenticationService } from './services/authentication.service';
+import { AuthGuard } from './guards/authentication.guard';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { JwtInterceptor } from './helpers/jwt.interceptor';
+import { ErrorInterceptor } from './helpers/error.interceptor';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
+import { AuthenticationLayoutComponent } from './layouts/authentication-layout/authentication-layout.component';
 
 @NgModule({
   declarations: [
@@ -17,16 +26,26 @@ import { AccountComponent } from './account/account.component';
     DashboardComponent,
     SongsComponent,
     MusiciansComponent,
-    AccountComponent
+    AccountComponent,
+    LoginComponent,
+    RegisterComponent,
+    MainLayoutComponent,
+    AuthenticationLayoutComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    AppMaterialModule,
+    ReactiveFormsModule,
     CoreModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    AuthenticationService,
+    AuthGuard,
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

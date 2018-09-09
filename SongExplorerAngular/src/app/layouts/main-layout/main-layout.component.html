@@ -1,0 +1,42 @@
+<div class="appcontainer container" layout="row">
+    <mat-toolbar color="primary" class="apptoolbar">
+        <div fxHide fxShow.xs fxHide.md>
+          <button mat-icon-button (click)="sidenav.toggle();" fxHide fxShow.xs fxHide.md><mat-icon>menu</mat-icon></button>
+        </div>
+        <a routerLink="/" mat-button>+ Song Explorer</a>
+        <div fxShow fxHide.xs fxShow.md>
+          <a routerLink="/dashboard" mat-button>Dashboard</a>
+          <a routerLink="/musicians" mat-button>Musicians</a>
+          <a routerLink="/songs" mat-button>Songs</a> 
+        </div>
+        <span class="flex"></span>
+        <div fxShow fxHide.xs fxShow.md>
+          <mat-menu #accountMenu="matMenu">
+            <a routerLink="/account" mat-menu-item>Account Details</a>
+            <button (click)="logout()" mat-menu-item>Logout</button>
+          </mat-menu>
+          <button mat-button [matMenuTriggerFor]="accountMenu">
+            <mat-icon>person</mat-icon> 
+            <span> Account</span>
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </div>
+    </mat-toolbar>
+    
+    <mat-sidenav-container fxFlexFill class="appsidenavcontainer">
+      <mat-sidenav #sidenav class="appsidenav" [opened]="(screenWidth < 840)" [mode]="(screenWidth < 840) ? 'over' : 'side'">
+        <mat-nav-list>
+          <a mat-list-item routerLink="/dashboard">Dashboard</a>
+          <a mat-list-item routerLink="/songs">Songs Library</a>
+          <a mat-list-item routerLink="/musicians">Musicians Library</a>
+          <mat-divider></mat-divider>
+          <a mat-list-item routerLink="/account">Account Details</a>
+          <a mat-list-item routerLink="/account">Logout</a>
+        </mat-nav-list>
+      </mat-sidenav>
+      <mat-sidenav-content>
+        <app-alert></app-alert>
+        <router-outlet></router-outlet>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>
