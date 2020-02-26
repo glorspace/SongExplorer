@@ -170,17 +170,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 attr-for-selected="name"
                 fallback-selection="view404"
                 role="main">
-                <song-explorer-dashboard name="dashboard" status-url="http://localhost:65336/Api/Status" token-info="[[tokenInfo]]"></song-explorer-dashboard>
-                <song-explorer-slots name="slots" api-url="http://localhost:65336/Api/Slots" token-info="[[tokenInfo]]"></song-explorer-slots>
-                <song-explorer-vocalists name="vocalists" api-url="http://localhost:65336/Api/Vocalists" token-info="[[tokenInfo]]"></song-explorer-vocalists>
-                <song-explorer-songs name="songs" base-api-url="http://localhost:65336/Api" token-info="[[tokenInfo]]"></song-explorer-songs>
-                <song-explorer-set-lists name="set-lists" base-api-url="http://localhost:65336/Api" token-info="[[tokenInfo]]"></song-explorer-set-lists>
+                <song-explorer-dashboard name="dashboard" status-url="http://songexplorer/Api/Api/Status" token-info="[[tokenInfo]]"></song-explorer-dashboard>
+                <song-explorer-slots name="slots" api-url="http://songexplorer/Api/Api/Slots" token-info="[[tokenInfo]]"></song-explorer-slots>
+                <song-explorer-vocalists name="vocalists" api-url="http://songexplorer/Api/Api/Vocalists" token-info="[[tokenInfo]]"></song-explorer-vocalists>
+                <song-explorer-songs name="songs" base-api-url="http://songexplorer/Api/Api" token-info="[[tokenInfo]]"></song-explorer-songs>
+                <song-explorer-set-lists name="set-lists" base-api-url="http://songexplorer/Api/Api" token-info="[[tokenInfo]]"></song-explorer-set-lists>
                 <song-explorer-view404 name="view404"></song-explorer-view404>
             </iron-pages>
         </app-header-layout>
         </app-drawer-layout>
         <paper-dialog id="login" modal>
-            <glor-auth-login login-url="http://localhost:65336/Token" register-url="http://localhost:65336/Api/Account/Register" on-login-success="_loginSuccess"></glor-auth-login>
+            <glor-auth-login login-url="http://songexplorer/Api/Token" register-url="http://songexplorer/Api/Api/Account/Register" on-login-success="_loginSuccess"></glor-auth-login>
         </paper-dialog>
     </template>
     

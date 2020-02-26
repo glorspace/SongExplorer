@@ -22,7 +22,7 @@ namespace SongExplorer.Api.Controllers
 {
     [Authorize]
     [RoutePrefix("api/Account")]
-    [EnableCors(origins: "http://localhost:4200", headers: "*", methods: "*")]
+    [EnableCors(origins: "http://songexplorer", headers: "*", methods: "*")]
     public class AccountController : ApiController
     {
         private const string LocalLoginProvider = "Local";

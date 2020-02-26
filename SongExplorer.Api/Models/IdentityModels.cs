@@ -21,7 +21,7 @@ namespace SongExplorer.Api.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+            : base("IdentityStore", throwIfV1Schema: false)
         {
         }
         

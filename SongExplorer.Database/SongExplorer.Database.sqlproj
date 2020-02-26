@@ -75,6 +75,7 @@
     <None Include="SongExplorer.publish.xml" />
     <None Include="ReferenceData\Key.data.sql" />
     <None Include="ReferenceData\Status.data.sql" />
+    <None Include="SongExplorer.Database.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SongExplorer.Db.refactorlog" />
